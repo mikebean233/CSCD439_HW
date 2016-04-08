@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1460064195 source:/Users/michael/Desktop/Spring 2016/CSCD 439/github/HW/CSCD439_HW/HW1/main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	"main.h"
+
+1460063736 /Users/michael/Desktop/Spring 2016/CSCD 439/github/HW/CSCD439_HW/HW1/main.h
+
