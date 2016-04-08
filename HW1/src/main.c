@@ -1,10 +1,11 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <ctype.h>
 
 #include "main.h"
+#include "linkedList.h"
 
 int main(int argc, char** args)
 {
@@ -24,16 +25,15 @@ int main(int argc, char** args)
 
     char* thisLine = calloc(sizeof(int), thisFileInfo->longestLineLength + 1);
 
-    while(fgets(thisLine, thisFileInfo->longestLineLength, inputFilePointer) != NULL) {
+    while(fgets(thisLine, thisFileInfo->longestLineLength + 1, inputFilePointer) != NULL) {
             stripNewLine(thisLine, thisFileInfo->longestLineLength);
 
             int noTokens = 0;
             if(strlen(thisLine) > 0){
-                char** theseTokens =  tokenize(thisLine, &noTokens);
+                LinkedList* theseTokens =  tokenize(thisLine, &noTokens);
 
             int tokenIndex = 0;
-            while(tokenIndex < noTokens)
-                printf("[%s]", theseTokens[tokenIndex++]);
+            printList(theseTokens);
 
             printf("\n");
         }
@@ -43,13 +43,20 @@ int main(int argc, char** args)
     fclose(inputFilePointer);
 }
 
+void printWordNode(Node* thisNode){
+    word thisWord = *((word*)thisNode->data);
+    printf("[%s]", thisWord.value);
+}
 
-int compareWords(word* wordA, word* wordB, int compareBy){
+int compareWords(Node* nodeA, Node* nodeB, int compareBy){
+    word wordA = *((word*)nodeA->data);
+    word wordB = *((word*)nodeB->data);
+
     if(compareBy == COMPARE_WORD_BY_VALUE)
-        return strcmp((const char*)wordA->value, (const char*)wordB->value);
+        return strcmp((const char*)wordA.value, (const char*)wordB.value);
 
     if(compareBy == COMPARE_WORD_BY_COUNT)
-        return wordA->count - wordB->count;
+        return wordA.count - wordB.count;
 
     fprintf(stderr, "Error: invalid compareBy parameter %d\n", compareBy);
     return 0;
@@ -68,10 +75,57 @@ int stripNewLine(char* input, int length){
 }
 
 
-char** tokenize(char* input, int* tokenCount){
+LinkedList* tokenize(char* input, int* tokenCount){
+    LinkedList* tokenList = linkedList();
+    tokenList->compareNodes = &compareWords;
+    tokenList->printNode    = &printWordNode;
 
-    (*tokenCount) = 0;
-    return (char**)0x0;
+    int length = strlen(input);
+    char leadChar, followChar;
+    int currentTokenLength = 0;
+
+    for(int i = 0; i <= length; ++i){
+        leadChar   = input[i + 1];
+        followChar = input[i];
+        int leadOnToken   = isalpha((int)leadChar);
+        int followOnToken = isalpha((int)followChar);
+
+        // we are just stepping onto a token
+        if(!followOnToken && leadOnToken){
+            // do nothing
+        }
+
+        // we are in the middle of a token
+        if(followOnToken && leadOnToken){
+            ++currentTokenLength;
+        }
+
+        // we are stepping off of a token
+        if(followOnToken && !leadOnToken){
+            ++currentTokenLength;
+            char* thisToken = mikecopy(input + (i - (currentTokenLength - 1)), currentTokenLength);
+            word* thisWord = malloc(sizeof(word));
+            thisWord->value = thisToken;
+            thisWord->count = 0;
+            addLast(tokenList, thisWord);
+            currentTokenLength = 0;
+        }
+
+        // we are not touching a token
+        if(!followOnToken && !leadOnToken){
+        }
+    }
+    return tokenList;
+}
+
+char* mikecopy(char* input, int length){
+    char* output = malloc(sizeof(char) * (length + 1));
+    int i = 0;
+    for(; i < length; ++i){
+        output[i] = input[i];
+    }
+    output[i] = '\0';
+    return output;
 }
 
 fileInfo* getFileInfo(FILE* filePointer){
