@@ -32,8 +32,9 @@ int main(int argc, char** args)
 
         exit(2);
     }
-
+    printf("Getting file attributes (line count and longest line length) ...");
     fileInfo* thisFileInfo = getFileInfo(inputFile);
+    printf(" Done\n");
 
     char* thisLine = calloc(sizeof(int), thisFileInfo->longestLineLength + 1);
     LinkedList* tokenList = linkedList();
