@@ -222,7 +222,8 @@ LinkedList* tokenize(char* input, int* tokenCount, LinkedList* tokenList){
     char leadChar, followChar;
     int currentTokenLength = 0;
 
-    for(int i = 0; i <= length; ++i){
+    int i;
+    for(i = 0; i <= length; ++i){
         leadChar   = input[i + 1];
         followChar = input[i];
 
