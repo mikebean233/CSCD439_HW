@@ -31,14 +31,36 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.c" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.c" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
+            <state relative-caret-position="210">
+              <caret line="136" column="0" selection-start-line="136" selection-start-column="0" selection-end-line="136" selection-end-column="0" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
                 <element signature="e#117#134#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="linkedList.c" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/linkedList.c">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="390">
+              <caret line="240" column="0" selection-start-line="240" selection-start-column="0" selection-end-line="241" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="linkedList.c" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/TurnIn/linkedList.c">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="420">
+              <caret line="240" column="4" selection-start-line="240" selection-start-column="4" selection-end-line="240" selection-end-column="4" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -57,7 +79,7 @@
       <file leaf-file-name="main.c" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TurnIn/main.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
+            <state relative-caret-position="645">
               <caret line="43" column="44" selection-start-line="43" selection-start-column="44" selection-end-line="43" selection-end-column="44" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -79,9 +101,10 @@
         <option value="$PROJECT_DIR$/test.txt" />
         <option value="$PROJECT_DIR$/src/main.h" />
         <option value="$PROJECT_DIR$/src/linkedList.h" />
-        <option value="$PROJECT_DIR$/src/linkedList.c" />
-        <option value="$PROJECT_DIR$/src/main.c" />
         <option value="$PROJECT_DIR$/TurnIn/main.c" />
+        <option value="$PROJECT_DIR$/src/main.c" />
+        <option value="$PROJECT_DIR$/src/linkedList.c" />
+        <option value="$PROJECT_DIR$/TurnIn/linkedList.c" />
       </list>
     </option>
   </component>
@@ -173,7 +196,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/bin/HW1" />
-    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.appearance" />
     <property name="settings.editor.splitter.proportion" value="0.23251231" />
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/michael/Desktop/Spring 2016/CSCD 439/HW/HW1/test.txt" />
     <property name="FullScreen" value="true" />
@@ -430,6 +453,36 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main.c">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#117#134#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TurnIn/main.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TurnIn/main.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="645">
+          <caret line="43" column="44" selection-start-line="43" selection-start-column="44" selection-end-line="43" selection-end-column="44" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#117#134#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main.c">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1545">
           <caret line="103" column="27" selection-start-line="103" selection-start-column="27" selection-end-line="103" selection-end-column="27" />
           <folding>
@@ -462,7 +515,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="12" column="35" selection-start-line="12" selection-start-column="35" selection-end-line="12" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -510,7 +562,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
           <caret line="9" column="20" selection-start-line="9" selection-start-column="20" selection-end-line="9" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -562,7 +613,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
           <caret line="10" column="4" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="4" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -624,7 +674,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="149">
           <caret line="157" column="0" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -670,20 +719,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="12" column="35" selection-start-line="12" selection-start-column="35" selection-end-line="12" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sortedWord.txt" />
     <entry file="file://$PROJECT_DIR$/sortedOccur.txt" />
-    <entry file="file://$PROJECT_DIR$/src/linkedList.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2802">
-          <caret line="99" column="5" selection-start-line="99" selection-start-column="4" selection-end-line="99" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
@@ -702,7 +742,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/TurnIn/main.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
+        <state relative-caret-position="645">
           <caret line="43" column="44" selection-start-line="43" selection-start-column="44" selection-end-line="43" selection-end-column="44" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -713,11 +753,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
+        <state relative-caret-position="210">
+          <caret line="136" column="0" selection-start-line="136" selection-start-column="0" selection-end-line="136" selection-end-column="0" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
             <element signature="e#117#134#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/linkedList.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="240" column="0" selection-start-line="240" selection-start-column="0" selection-end-line="241" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TurnIn/linkedList.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="240" column="4" selection-start-line="240" selection-start-column="4" selection-end-line="240" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
