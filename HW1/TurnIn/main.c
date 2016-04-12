@@ -94,6 +94,8 @@ int main(int argc, char** args)
     // free the resources we've used
     printf("Cleaning up ...");
     free(thisLine);
+    free(wordArray);
+    free(thisFileInfo);
     fclose(inputFile);
     fclose(wordOutputFile);
     fclose(occurOutputFile);
