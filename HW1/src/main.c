@@ -40,6 +40,8 @@ int main(int argc, char** args)
     char* thisLine = calloc(sizeof(int), thisFileInfo->longestLineLength + 1);
     LinkedList* tokenList = linkedList();
     printf(" Done\n");
+    printf("Tokenizing input file %s into a linked list ...", args[1]);
+
 
     // Set the linked list function pointers
     tokenList->compareNodes = &compareWordNodes;
@@ -50,7 +52,6 @@ int main(int argc, char** args)
     tokenList->compareFlag  = COMPARE_WORD_BY_VALUE;
 
     int lineCount = 0;
-    printf("Tokenizing input file %s into a linked list ...", args[1]);
     while(fgets(thisLine, thisFileInfo->longestLineLength + 1, inputFile) != NULL) {
         stripNewLine(thisLine, thisFileInfo->longestLineLength);
 
