@@ -123,10 +123,17 @@ int duplicateWordBehavior(struct linkedlist* theList, Node* newNode, Node* match
 
 // LinkedList.freeNodeData()
 int freeWordNode(Node* node){
+
     // free the string
-    free( ((word*) node->data)->value );
+    char* thisWordString = ((word*) node->data)->value;
+    printf("freeing word string: %s\n", thisWordString);
+    free( thisWordString);
 
     // free free the word object
+    char* thisWord = node->data;
+    printf("freeing word struct ------------");
+    printWord((word*) node->data, stdout);
+    printf("\n");
     free( node->data );
 
     return 1;
