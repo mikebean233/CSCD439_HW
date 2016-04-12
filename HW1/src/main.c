@@ -36,7 +36,7 @@ int main(int argc, char** args)
     fileInfo* thisFileInfo = getFileInfo(inputFile);
     printf(" Done\n");
 
-    printf("Allocating Linked List ...")
+    printf("Allocating Linked List ...");
     char* thisLine = calloc(sizeof(int), thisFileInfo->longestLineLength + 1);
     LinkedList* tokenList = linkedList();
     printf(" Done\n");
