@@ -1,11 +1,9 @@
-inputFile = testfile1
+inputFile = testfile2
 outputFile1 = sortedWord.txt
 outputFile2 = sortedOccur.txt
 
 all: hw1
-	echo -n "executing hw1 ..."
 	./hw1 $(inputFile) $(outputFile1) $(outputFile2)
-	echo " Done"
 
 hw1: main.o linkedList.o
 	gcc -g -o hw1 main.c linkedList.o

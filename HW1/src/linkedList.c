@@ -30,7 +30,7 @@ LinkedList * linkedList()
 	return lp;
 }
 
-// by default add a duplicate value right after it's matcing node (this behavior can be overridden)
+// by default add a duplicate value right after it's matching node (this behavior can be overridden)
 int defaultDuplicateEntryBehavior(LinkedList *theList, Node *newNode, Node *match)
 {
     void* newData = newNode->data;
@@ -301,7 +301,7 @@ void** toArray(LinkedList* theList){
 }
 
 /*
- * remove the first occurence of nn in theList
+ * remove the first occurrence of nn in theList
  *
  */
 void removeItem(LinkedList * theList, Node * nn)
