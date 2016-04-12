@@ -238,7 +238,7 @@ int addOrdered(LinkedList* theList, void* data)
 
     Node* head = theList->head;
     Node* cur ;
-    
+
     for(cur = head->next; cur->next != head; cur = cur->next){
         int curCompare = theList->compareNodes(cur, nn, theList->compareFlag);
         int nextCompare = theList->compareNodes(cur->next, nn, theList->compareFlag);

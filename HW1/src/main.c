@@ -335,22 +335,28 @@ int stripNewLine(char* input, int length){
 }
 
 int compareStringsIgnoreCase(char* a, char* b){
-    char* newa = calloc(strlen(a), 1);
-    char* newb = calloc(strlen(b), 1);
+    int aLength = strlen(a);
+    int bLength = strlen(b);
 
-    int i;
-    for(i = 0; i < strlen(a); ++i){
-        newa[i] = tolower(a[i]);
-    }
+     int maxLength = (aLength > bLength) ? aLength : bLength;
 
-    for(i = 0; i < strlen(b); ++i){
-        newb[i] = tolower(b[i]);
-    }
+     int i;
+     for(i = 0; i < maxLength; ++i){
 
-    int returnValue = strcmp(newa, newb);
-    free(newa);
-    free(newb);
-    return returnValue;
+         if(i > aLength)
+             return -1;
+         if(i > bLength)
+             return 1;
+
+         char aChar = tolower(a[i]);
+         char bChar = tolower(b[i]);
+
+         if(aChar > bChar)
+            return 1;
+         if(bChar > aChar)
+             return -1;
+     }
+    return 0;
 }
 
 int strContains(char target, char* source){
