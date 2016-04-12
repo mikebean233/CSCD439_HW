@@ -1,12 +1,4 @@
-hi donkey date the The
-hi
-hi
-hi
-hi
-hi
-hi
-hi
-apple
-bean
-apple
-apple
+a
+b
+c
+ab

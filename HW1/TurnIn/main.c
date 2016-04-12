@@ -96,7 +96,7 @@ int main(int argc, char** args)
     fclose(occurOutputFile);
     clearList(tokenList);
     printf(" Done\n");
-    return 0;
+    exit(0);
  }
 
 /***************************************************************

@@ -166,20 +166,15 @@ void printList(LinkedList * theList)
     	printf("Empty List");
         return;
     }
-    printf("head node: ");
-    //theList->printNode(theList->head);
-    printf("\n");
 
-    //printf("Linked List     size: %i\n", theList->size);
+    printf("Linked List     size: %i\n", theList->size);
     Node* cur = theList->head->next;
-    //if(theList->size > 0)
-    //    theList->printNode(theList->head);
+
     while(cur != theList->head)
     {
         theList->printNode(cur);
         cur = cur->next;
     }
-    //theList->printNode(theList->head);
 }
 
 Node* addLast(LinkedList * theList, void* data)
@@ -227,9 +222,8 @@ void addFirst(LinkedList * theList, void* data)
 	nn->next = head->next;
 	nn->prev = head;
 
-    head->next->prev = nn;
+    nn->next->prev = nn;
     head->next = nn;
-
     theList->lastCreated = nn;
 
 	theList->size ++; 
@@ -243,24 +237,32 @@ int addOrdered(LinkedList* theList, void* data)
         return 0;
 
     Node* head = theList->head;
-    Node* cur = head->next;
+    Node* cur ;
+    char* curValue = theList->nodeToString(cur);
+    char* nnValue  = theList->nodeToString(nn);
 
-    // add this node at the beginning if it belongs there
-    if(cur == head || theList->compareNodes(cur, nn, theList->compareFlag) < 0){
-        addFirst(theList, data);
-        free(nn);
-        return 1;
-    }
+    for(cur = head->next; cur->next != head; cur = cur->next){
+        int curCompare = theList->compareNodes(cur, nn, theList->compareFlag);
+        int nextCompare = theList->compareNodes(cur->next, nn, theList->compareFlag);
 
-    while(cur->next != head && theList->compareNodes(cur, nn, theList->compareFlag) >= 0)
-    {
-        if(theList->compareNodes(cur, nn, theList->compareFlag) == 0)
+        if(curCompare == 0)
             return theList->duplicateEntryBehavior(theList, nn, cur);
-        cur = cur->next;
+
+        if(curCompare < 0 && nextCompare > 0){
+            addAfter(theList, cur, data);
+            free(nn);
+            return 1;
+        }
+
+        if(curCompare > 0){
+           addAfter(theList, cur->prev, data);
+           free(nn);
+            return 1;
+        }
     }
 
+    addLast(theList, data);
     free(nn);
-    addAfter(theList,cur, data);
     return 1;
 }
 
@@ -299,7 +301,6 @@ void** toArray(LinkedList* theList){
     }
     return array;
 }
-
 
 /*
  * remove the first occurence of nn in theList

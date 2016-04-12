@@ -15,7 +15,6 @@ struct node
 };
 typedef struct node Node;
 
-
 struct linkedlist
 {
   Node* head;
@@ -29,10 +28,10 @@ struct linkedlist
   void  (*freeHeadNodeData)(Node*);
   void* (*findByValue) (struct linkedlist* theList, void* data, int* index, int flags);
   int   (*duplicateEntryBehavior) (struct linkedlist* theList, Node* newNode, Node* match);
+  char* (*nodeToString) (Node* node);
 };
 
 typedef struct linkedlist LinkedList;
-
 
 LinkedList * linkedList();
 
