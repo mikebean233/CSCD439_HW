@@ -101,8 +101,8 @@ int main(int argc, char** args)
     fclose(occurOutputFile);
     clearList(tokenList);
     printf(" Done\n");
-    return 0;
- }
+    exit(0);
+}
 
 /***************************************************************
  *
@@ -117,25 +117,17 @@ void printNode(Node* inNode){
 // LinkedList.dublicateEntryBehavior
 int duplicateWordBehavior(struct linkedlist* theList, Node* newNode, Node* match){
     ((word*)(match->data))->count++;
+    theList->freeNodeData(newNode);
     free(newNode);
     return 0;
 }
 
 // LinkedList.freeNodeData()
 int freeWordNode(Node* node){
-
-    // free the string
-    char* thisWordString = ((word*) node->data)->value;
-    printf("freeing word string: %s\n", thisWordString);
-    free( thisWordString);
-
-    // free free the word object
-    char* thisWord = node->data;
-    printf("freeing word struct ------------");
-    printWord((word*) node->data, stdout);
-    printf("\n");
-    free( node->data );
-
+    word* thisWord = (word*) node->data;
+    char* thisWordValue = thisWord->value;
+    free(thisWord);
+    free(thisWordValue);
     return 1;
 }
 
@@ -259,6 +251,7 @@ LinkedList* tokenize(char* input, int* tokenCount, LinkedList* tokenList){
             char* thisToken = mikecopy(tokenStartPos, currentTokenLength);
             if(currentTokenLength == 1 && (tolower((int)thisToken[0]) != 'a' && tolower((int)thisToken[0]) != 'i')) {
                 currentTokenLength = 0;
+                free(thisToken);
                 continue;
             }
             word* thisWord = malloc(sizeof(word));
@@ -347,24 +340,24 @@ int compareStringsIgnoreCase(char* a, char* b){
     int aLength = strlen(a);
     int bLength = strlen(b);
 
-     int maxLength = (aLength > bLength) ? aLength : bLength;
+    int maxLength = (aLength > bLength) ? aLength : bLength;
 
-     int i;
-     for(i = 0; i < maxLength; ++i){
+    int i;
+    for(i = 0; i < maxLength; ++i){
 
-         if(i > aLength)
-             return -1;
-         if(i > bLength)
-             return 1;
-
-         char aChar = tolower(a[i]);
-         char bChar = tolower(b[i]);
-
-         if(aChar > bChar)
+        if(i > aLength)
+            return -1;
+        if(i > bLength)
             return 1;
-         if(bChar > aChar)
-             return -1;
-     }
+
+        char aChar = tolower(a[i]);
+        char bChar = tolower(b[i]);
+
+        if(aChar > bChar)
+            return 1;
+        if(bChar > aChar)
+            return -1;
+    }
     return 0;
 }
 
@@ -376,4 +369,3 @@ int strContains(char target, char* source){
 
     return 0; // false
 }
-
