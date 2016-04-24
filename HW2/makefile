@@ -1,9 +1,9 @@
-All: pgmUtility.c pgmProcessSequential.o pgmProcess.o
-	g++ -g -o myPaintSeq pgmUtility.o pgmProcessSequential.o
-	nvcc -o myPaint pgmUtility.o pgmProcess.o
+All: pgmUtility.c pgmProcessSequential.o pgmProcess.o timing.o
+	g++ -g -o myPaintSeq pgmUtility.c pgmProcessSequential.o timing.o
+	nvcc -o myPaint pgmUtility.c pgmProcess.o timing.o
 
 pgmProcess.o: pgmProcess.cu
-	nvcc -g -c -o pgmProcess.o pgmProcess.c
+	nvcc -g -c -o pgmProcess.o pgmProcess.cu
 
 pgmProcessSequential.o: pgmProcessSequential.c
 	g++ -g -c -o pgmProcessSequential.o pgmProcessSequential.c

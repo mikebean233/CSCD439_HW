@@ -248,7 +248,7 @@ int main(int argc, char **argv) {
     else
     {
         // allocate memory for the bitmap
-        bitmap1d = calloc(sizeof(int), numRows * numCols);
+        bitmap1d = (int*) calloc(sizeof(int), numRows * numCols);
         if(bitmap1d ==  NULL){
             fprintf(stderr, "Error: there was a problem allocating memory using malloc()\n");
         }
