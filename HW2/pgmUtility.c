@@ -497,7 +497,7 @@ int pgmWrite(char **header, int *pixels, int numRows, int numCols, FILE *out) {
 
     for (r = 0; r < numRows; ++r) {
         for (c = 0; c < numCols; ++c) {
-            i = numCols * c + r;
+            i = numCols * r + c;
             fprintf(out, "%3i ", pixels[i]);
             ++colCount;
             if (colCount > outCols) {
@@ -915,8 +915,8 @@ int longestLineLength(FILE* filePointer){
     char thisChar;
     char prevChar = '\0';
     int thisLineLength = 0;
-    fpos_t* beforePosition;
-    fgetpos(filePointer, beforePosition);
+    fpos_t beforePosition;
+    fgetpos(filePointer, &beforePosition);
 
     while((thisChar = fgetc(filePointer)) != EOF){
         if((char)thisChar != '\n' &&
@@ -932,7 +932,7 @@ int longestLineLength(FILE* filePointer){
         }
         prevChar = thisChar;
     }
-    fsetpos(filePointer, beforePosition);
+    fsetpos(filePointer, &beforePosition);
     return longestLength + 1;
 }
 
