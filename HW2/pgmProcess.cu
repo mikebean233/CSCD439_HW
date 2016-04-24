@@ -1,5 +1,4 @@
-
-
+#include "pgmUtility.h"
 /**
  *  Function Name:
  *      distance()
@@ -11,5 +10,21 @@
  */
 __device__ float distance( int p1[], int p2[] )
 {
+    int distanceX = p2[1] - p1[1];
+    int distanceY = p2[0] - p1[0];
+    //return sqrt((float)(distanceX * distanceX) + (float)(distanceY * distanceY));
+}
+
+int pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char **header) {
 
 }
+
+int pgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header) {
+}
+
+int pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col){
+
+}
+
+
+

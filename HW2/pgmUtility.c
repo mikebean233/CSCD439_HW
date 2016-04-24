@@ -18,6 +18,7 @@
 #include <ctype.h>
 
 #include "pgmUtility.h"
+#include "timing.h"
 
 #define PARSE_HEADER_ERROR      5
 #define PARSE_PIXEL_DATA_ERROR  6
@@ -30,29 +31,19 @@
 
 #define DEBUG                   0
 
-// intWithin() flags
-#define LOWER_INCLUSIVE         1
-#define UPPER_INCLUSIVE         2
-
 // Implement or define each function prototypes listed in pgmUtility.h file.
 // NOTE: You can NOT change the input, output, and argument type of the functions in pgmUtility.h
 // NOTE: You can NOT change the prototype (signature) of any functions listed in pgmUtility.h
 
 int countTokens(char *input);
-
 int getToken(int index, char *dest, char *source);
-
 char *getTokenAddress(int index, char *source, int *size);
-
 void printError();
-
 void removeLineFeed(char *str);
-
 void free2dArray(void **array, int noRows);
-
 void usage();
-
 int getType(char *array, int size);
+int * linearizeBitmap(int **twoDBitmap, int numRows, int numCols);
 
 char *programName;
 int errorFlag; // This is used to keep track of problems that arise inside of functions that do not return specific error details
@@ -237,7 +228,7 @@ int main(int argc, char **argv) {
      */
 
 
-    header = (char **) malloc(4 * sizeof(char *));
+    header = (char **) malloc(rowsInHeader * sizeof(char *));
     if(header == NULL){
         fprintf(stderr, "Error: There was a problem allocating memory using malloc()\n");
         exit(1);
@@ -263,8 +254,8 @@ int main(int argc, char **argv) {
         }
 
         // allocate memory for our header
-        for(i = 0; i < 4; ++i){
-            header[i] = (char*) calloc(sizeof(char), 70);
+        for(i = 0; i < rowsInHeader; ++i){
+            header[i] = (char*) calloc(sizeof(char), maxSizeHeadRow);
             if(header[i] == NULL){
                 --i;
                 do{
@@ -288,17 +279,18 @@ int main(int argc, char **argv) {
     if (errorFlag != 0 || bitmap1d == NULL) {
         fprintf(stderr, "There was a problem in pgmRead()\n\n");
         printError();
-        free2dArray((void **) header, 4);
+        free2dArray((void **) header, rowsInHeader);
         free2dArray((void **) bitmap, numRows);
         return 1;
     }
 
     if ((outf = fopen(outputFilename, "w")) == NULL) {
         fprintf(stderr, "There was a problem opening %s for output \n\n", outputFilename);
-        free2dArray((void **) header, 4);
+        free2dArray((void **) header, rowsInHeader);
         return 1;
     }
 
+    double before = currentTime();
     if (drawCircle)
         pgmDrawCircle(bitmap1d, numRows, numCols, circleCenterRow, circleCenterCol, radius, header);
 
@@ -310,6 +302,9 @@ int main(int argc, char **argv) {
 
     if(makeTest)
         buildTestOutput(header, bitmap1d, numRows, numCols, testImagePeriod);
+    double after = currentTime();
+
+    printf("time cost: %lf seconds\n", after - before);
 
     if (pgmWrite(header, bitmap1d, numRows, numCols, outf) == -1) {
         fprintf(stderr, "There was a problem writing to %s\n\n", outputFilename);
@@ -319,7 +314,7 @@ int main(int argc, char **argv) {
 
     // Free up the memory we were using before we exit
     free(bitmap1d);
-    free2dArray((void **) header, 4);
+    free2dArray((void **) header, rowsInHeader);
     free2dArray((void **) bitmap, numRows);
     return 0;
 
@@ -368,16 +363,16 @@ int **pgmRead(char **header, int *numRows, int *numCols, FILE *in) {
     int i = 0, j = 0, tmp = 0; // multi use loop counters
     char temp[10]; //used later to store individual tokens
 
-    for (i = 0; i < 4; ++i)
-        header[i] = (char *) malloc(70 * sizeof(char));
+    for (i = 0; i < rowsInHeader; ++i)
+        header[i] = (char *) malloc(maxSizeHeadRow * sizeof(char));
 
-    for (i = 0; i < 4; ++i) {
+    for (i = 0; i < rowsInHeader; ++i) {
         if (feof(in))// if we're at the end of the file already, we have a problem...
         {
             errorFlag = PARSE_HEADER_ERROR; // set the error flag so that we know where the problem was later
             return NULL;
         }
-        fgets(header[i], 70, in);
+        fgets(header[i], maxSizeHeadRow, in);
         if(stringLengthIncludeCr(header[i]) == 0){
             errorFlag = PARSE_HEADER_ERROR;
             fprintf(stderr, "prgRead(): There was a problem parsing the input file, the header contains an empty line\n");
@@ -386,7 +381,7 @@ int **pgmRead(char **header, int *numRows, int *numCols, FILE *in) {
     }
 
     // remove any new line, or line feed characters from the header lines.
-    for (i = 0; i < 4; ++i)
+    for (i = 0; i < rowsInHeader; ++i)
         for (j = 0; j < (strlen(header[i])); ++j)
             if (header[i][j] == '\n' || header[i][j] == '\r')
                 header[i][j] = '\0';
@@ -413,7 +408,7 @@ int **pgmRead(char **header, int *numRows, int *numCols, FILE *in) {
 
     int **bitmap = (int **) malloc(*numRows * sizeof(int *));
     if (bitmap == NULL){ // Make sure there wasn't a problem allocating memory for bitmap
-        for(i = 0; i < 4; ++i)
+        for(i = 0; i < rowsInHeader; ++i)
             if(header[i] != NULL)
                 free(header[i]);
         return NULL;
@@ -493,7 +488,7 @@ int pgmWrite(char **header, int *pixels, int numRows, int numCols, FILE *out) {
 
     int outCols = 16;
     int i, r, c, colCount = 0;
-    for (i = 0; i < 4; ++i)
+    for (i = 0; i < rowsInHeader; ++i)
         fprintf(out, "%s\n", header[i]);
 
     for (r = 0; r < numRows; ++r) {
@@ -708,160 +703,6 @@ double distance(int p1[], int p2[]) {
     return sqrt(pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2));
 }
 
-
-int pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char **header) {
-    if (pixels == NULL || header == NULL)
-        return 0;
-    int i = 0;
-    int oldMaxIntens = 0;
-    int newMaxIntens = 0;
-    sscanf(header[3], "%i", &oldMaxIntens);
-
-    int r, c;
-    for (r = 0; r < numRows; ++r) {
-        for (c = 0; c < numCols; ++c) {
-            i = numCols * r + c;
-            if (c < edgeWidth           // left edge
-                || c > numCols - edgeWidth // right edge
-                || r < edgeWidth           // top edge
-                || r > numRows - edgeWidth) // bottom edge
-                pixels[i] = 0;
-            if (pixels[i] > newMaxIntens)
-                newMaxIntens = pixels[i];
-        }
-    }
-
-    sprintf(header[3], "%i", newMaxIntens);
-    return (newMaxIntens == oldMaxIntens) ? 0 : 1;
-}// end pgmDrawEdge
-
-
-int pgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header) {
-    if (pixels == NULL || header == NULL)
-        return 1;
-
-    int oldMaxIntens = 0;
-    int newMaxIntens = 0;
-    sscanf(header[3], "%i", &oldMaxIntens);
-    radius = abs(radius); // so we don't have to deal with any negative radius nonsense
-
-    int r, c;
-    int i;
-    int p1[] = {centerRow, centerCol};
-    int p2[2];
-    for (r = 0; r < numRows; ++r) {
-        for (c = 0; c < numCols; ++c) {
-            i = numCols * r + c;
-            p2[0] = r;
-            p2[1] = c;
-            if (distance(p1, p2) <= radius)
-                pixels[i] = 0;
-            if (pixels[i] > newMaxIntens)
-                newMaxIntens = pixels[i];
-        }
-    }
-
-    sprintf(header[3], "%i", newMaxIntens);
-    return (newMaxIntens == oldMaxIntens) ? 0 : 1;
-}
-
-/**
- *  Function Name:
- *      pgmDrawLine()
- *      pgmDrawLine() draws a straight line in the image by setting relavant pixels to Zero.
- *                      In this function, you have to invoke a CUDA kernel to perform all image processing on GPU.
- *
- *  @param[in,out]  pixels  holds all pixels in the pgm image, which a 2D integer array. The array
- *                          are modified after the drawing.
- *  @param[in]      numRows describes how many rows of pixels in the image.
- *  @param[in]      numCols describes how many columns of pixels in one row in the image.
- *  @param[in]      p1row specifies the row number of the start point of the line segment.
- *  @param[in]      p1col specifies the column number of the start point of the line segment.
- *  @param[in]      p2row specifies the row number of the end point of the line segment.
- *  @param[in]      p2col specifies the column number of the end point of the line segment.
- *  @param[in,out]  header returns the new header after draw.
- *                  the function might change the maximum intensity value in the image, so we
- *                  have to change the maximum intensity value in the header accordingly.
- *
- *  @return         return 1 if max intensity is changed by the drawing, otherwise return 0;
- */
-int pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col) {
-    if (pixels == NULL || header == NULL)
-        return 1;
-
-    int oldMaxIntens = 0;
-    int newMaxIntens = 0;
-    int i = 0;
-    sscanf(header[3], "%i", &oldMaxIntens);
-
-    // avoid a divide by zero error by not calculating the slope
-    if (p1col == p2col) {
-        if (!intInRange(p1col, 0, numCols, UPPER_INCLUSIVE | LOWER_INCLUSIVE))
-            return 0;
-
-        int startRow = intMin(p1row, p2row);
-        int endRow = intMax(p1row, p2row);
-        int curRow = startRow;
-        for (; curRow < endRow; ++curRow) {
-            // make sure this pixel is actually within the image
-            if (!intInRange(curRow, 0, numRows, UPPER_INCLUSIVE | LOWER_INCLUSIVE))
-                continue;
-            i = numRows * curRow + p1col;
-
-
-            pixels[i] = 0;
-            if (pixels[i] > newMaxIntens)
-                newMaxIntens = pixels[i];
-        }
-    }
-    else // we don't have a vertical line
-    {
-        int p1[2] = {0, 0};
-        int p2[2] = {0, 0};
-
-        if (p1col < p2col) {
-            p1[0] = p1row;
-            p1[1] = p1col;
-            p2[0] = p2row;
-            p2[1] = p2col;
-        }
-        else {
-            p1[0] = p2row;
-            p1[1] = p2col;
-            p2[0] = p1row;
-            p2[1] = p1col;
-        }
-
-        double slope = (p2[0] - p1[0]) / (p2[1] - p1[1]);
-        if(DEBUG)
-            printf("slope: %lf\n", slope);
-
-        int thisCol = p1[1];
-        for (; thisCol < numCols; ++thisCol) {
-
-            int relativeCol = thisCol - p1[1];
-            int thisRow = relativeCol * slope + p1[0];
-
-            // make sure this pixel is actually within the image
-            if (!intInRange(thisRow, 0, numRows - 1, UPPER_INCLUSIVE | LOWER_INCLUSIVE))
-                continue;
-            if (!intInRange(thisCol, 0, numCols - 1, UPPER_INCLUSIVE | LOWER_INCLUSIVE))
-                continue;
-            if(DEBUG)
-                printf("plot(%d, %d)\n", thisRow, thisCol);
-
-            i = numRows * thisRow + thisCol;
-            pixels[i] = 0;
-            if (pixels[i] > newMaxIntens)
-                newMaxIntens = pixels[i];
-
-        }
-    }
-
-    sprintf(header[3], "%i", newMaxIntens);
-    return (newMaxIntens == oldMaxIntens) ? 0 : 1;
-}
-
 /**
  *  Function Name;
  *      intMax()
@@ -884,30 +725,6 @@ int intMin(int a, int b) {
         return a;
     else
         return b;
-}
-
-/**
- *  Function Name;
- *      intInRange()
- *      intInRange() returns true if the target is within bound1 and bound2 (inclusivity can be checked if
- *                   LOWER_INCLUSIVE or UPPER_INCLUSIVE are included in the flags argument)
- */
-int intInRange(int target, int bound1, int bound2, int flags) {
-    int lowerBound = intMin(bound1, bound2);
-    int upperBound = intMax(bound1, bound2);
-    int result = ((target > lowerBound && target < upperBound) || (target == lowerBound && (flags & LOWER_INCLUSIVE)) ||
-                  (target == upperBound && (flags & UPPER_INCLUSIVE)));
-
-    if (DEBUG) {
-        char *intervalChars = "([)]";
-        char *booleanStrings[] = {"false", "true"};
-        char openIntervalChar = intervalChars[(flags & LOWER_INCLUSIVE) != 0];
-        char closeIntervalChar = intervalChars[((flags & UPPER_INCLUSIVE) != 0) + 2];
-        printf("%d in %c%d %d%c : %s\n", target, openIntervalChar, lowerBound, upperBound, closeIntervalChar,
-               booleanStrings[result]);
-    }
-
-    return result;
 }
 
 int longestLineLength(FILE* filePointer){

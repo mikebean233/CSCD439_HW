@@ -131,17 +131,7 @@ int intMax(int a, int b);
  */
 int intMin(int a, int b);
 
-/**
- *  Function Name;
- *      intInRange()
- *      intInRange() returns true if the target is within bound1 and bound2 (inclusivity can be checked if
- *                   LOWER_INCLUSIVE or UPPER_INCLUSIVE are included in the flags argument)
- */
-int intInRange(int target, int bound1, int bound2, int flags);
-
-
 int longestLineLength(FILE* filePointer);
-int * linearizeBitmap(int **twoDBitmap, int numRows, int numCols);
 void buildTestOutput(char** header, int* pixels, int numRows, int numCols, double* period);
 int stringLengthIncludeCr(char* input);
 
