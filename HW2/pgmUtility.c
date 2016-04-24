@@ -695,14 +695,6 @@ int printString(char *str) {
 
 }
 
-
-double distance(int p1[], int p2[]) {
-    if (p1 == NULL || p2 == NULL)
-        return 0.0;
-
-    return sqrt(pow(p1[0] - p2[0], 2) + pow(p1[1] - p2[1], 2));
-}
-
 /**
  *  Function Name;
  *      intMax()
