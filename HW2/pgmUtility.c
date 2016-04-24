@@ -446,6 +446,7 @@ int **pgmRead(char **header, int *numRows, int *numCols, FILE *in) {
             if (type != INTEGER && type != NULL_TOKEN) {
                 fprintf(stderr, "\n We encountered a non integer in the pixel data (%s is type %i)\n", temp, type);
                 errorFlag = PARSE_PIXEL_DATA_ERROR;
+                free(thisLine);
                 return NULL;
             }
 
@@ -482,7 +483,7 @@ int **pgmRead(char **header, int *numRows, int *numCols, FILE *in) {
     //    printf("Last row: %i  Last Column: %i\n", r, c);
     //    return NULL;
     //}
-
+    free(thisLine);
     return bitmap;
 }// end prmRead
 
