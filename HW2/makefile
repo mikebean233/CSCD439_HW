@@ -10,3 +10,7 @@ pgmProcessSequential.o: pgmProcessSequential.c
 
 timing.o: timing.c
 	g++ -g -c -o timing.o timing.c
+
+clean: *.o
+	rm *.o
+	rm myPain*
