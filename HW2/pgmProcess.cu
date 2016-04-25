@@ -71,6 +71,10 @@ __global__ void  gpuDrawEdge(int *pixels, int numRows, int numCols, int edgeWidt
         pixels[threadId] = 0;
     }
 
+    int i;
+    for(i = 0; i < 3*512; ++i){
+        pixels[threadId] = 0;
+    }
     pixels[threadId] = 0;
 }
 
