@@ -65,6 +65,8 @@ __global__ void  gpuDrawEdge(int *pixels, int numRows, int numCols, int edgeWidt
        thisCol >= numCols - edgeWidth){
         pixels[threadId] = 0;
     }
+
+    pixels[threadId] = 0;
 }
 
 __global__ void gpuDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header) {
