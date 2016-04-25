@@ -13,9 +13,9 @@
  */
 __device__ float distance( int p1[], int p2[] )
 {
-    //int distanceX = p2[1] - p1[1];
-    //int distanceY = p2[0] - p1[0];
-    //return sqrt((float)(distanceX * distanceX) + (float)(distanceY * distanceY));
+    int distanceX = p2[1] - p1[1];
+    int distanceY = p2[0] - p1[0];
+    return sqrt((float)(distanceX * distanceX) + (float)(distanceY * distanceY));
     return 0.0;
 }
 
