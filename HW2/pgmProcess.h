@@ -9,3 +9,16 @@
  *  @return         return distance between p1 and p2
  */
 __device__ float distance( int p1[], int p2[] );
+
+
+__device__ void  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth) {
+    int threadId = blockIdx.x * blockDim.x + threadIdx.x;
+    int thisRow =
+
+}
+
+__device__ void pgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius) {
+    return 0;
+}
+
+__device__ void pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col){

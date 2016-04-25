@@ -1,4 +1,6 @@
-//#include "pgmUtility.h"
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
 /**
  *  Function Name:
  *      distance()
@@ -17,6 +19,28 @@ __device__ float distance( int p1[], int p2[] )
 }
 
 int  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char **header) {
+    int* dPixels;
+    int blockSize = 512;
+    int gridSize = ceil(((double)numRows * (double)numCols) / (double) blockSize);
+    int arraySizeInBytes = sizeof(int) * numRows * numCols;
+
+    // allocate device memory for the array
+    cudaMalloc(&dPixels, arraySizeInBytes);
+
+    // zero the memory in cuda
+    //cudaMemset(d_array, 0, arraySizeInBytes);
+
+    // copy the cpu memory to the gpu
+    cudoMemcpy(dPixels, pixels, arraySizeInBytes, cudaMemcpyHostToDevice);
+
+    // run the kernel
+    pgmDrawEdge<<<gridSize, blockSize>>>(dPixels, numRows, numCols, edgeWidth);
+
+    // copy the results back to the host array
+    cudaMemcpy(pixels, dPixels, arraySizeInBytes, cudaMemcpyDeviceToHost);
+
+    // release the device array
+    cudaFree(d_array);
     return 0;
 }
 
@@ -27,6 +51,30 @@ int pgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int cent
 int pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col){
     return 0;
 }
+
+__device__ void  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth) {
+    int threadId = blockIdx.x * blockDim.x + threadIdx.x;
+    int thisRow  = threadId / numCols;
+    int thisCol  = threadId % numCols;
+
+    if(thisRow <= edgeWidth ||
+       thisRow >= numCols - edgeWidth ||
+       thisCol <= edgeWidth ||
+       thisCol >= numRows - edgeWidth){
+        pixels[threadId] = 0;
+    }
+}
+
+__device__ void pgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header) {
+    int threadId = blockIdx.x * blockDim.x + threadIdx.x;
+    int thisRow  = threadId / numCols;
+    int thisCol  = threadId % numCols;
+
+
+}
+
+__device__ void pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col){
+
 
 
 
