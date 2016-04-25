@@ -20,7 +20,6 @@ __device__ float distance( int p1[], int p2[] )
 }
 
 int  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char **header) {
-    cudaDeviceReset();
     int* dPixels;
     int blockSize = 512;
     int gridSize = ceil(((double)numRows * (double)numCols) / (double) blockSize);
@@ -28,21 +27,26 @@ int  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char **he
     int arraySizeInBytes = sizeof(int) * numRows * numCols;
 
     // allocate device memory for the array
+    printf("cudaMalloc()\n");
     cudaMalloc(&dPixels, arraySizeInBytes);
 
     // zero the memory in cuda
     //cudaMemset(d_array, 0, arraySizeInBytes);
 
     // copy the cpu memory to the gpu
+    printf("cudaMemcpy()\n");
     cudaMemcpy(dPixels, pixels, arraySizeInBytes, cudaMemcpyHostToDevice);
 
     // run the kernel
+    printf("gpuDrawEdge()\n");
     gpuDrawEdge<<<gridSize, blockSize>>>(dPixels, numRows, numCols, edgeWidth);
 
     // copy the results back to the host array
+    printf("cudaMemcpy()\n");
     cudaMemcpy(pixels, dPixels, arraySizeInBytes, cudaMemcpyDeviceToHost);
 
     // release the device array
+    printf("cudaFree()\n");
     cudaFree(dPixels);
     return 0;
 }
