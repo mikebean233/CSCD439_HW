@@ -93,7 +93,6 @@ int pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row,
     else
         slope = (pb[0] - pa[0]) / (pb[1] - pa[1]);
 
-    int startCol = pa[1];
     int noSamples = (vertical) ? ((pa[0] < pb[0]) ? pb[0] - pa[0] : pa[0] - pb[0]) : pb[1] - pa[0];
 
     int gridSize = ceil(((double)noSamples) / (double) blockSize);
@@ -151,7 +150,7 @@ __global__ void gpuDrawLine(int *pixels, int noRows, int noCols, int startRow, i
     }
     else{
         thisCol = startCol + position;
-        thisRow = startRow + (slope * startRow);
+        thisRow = startRow + (slope * position);
     }
     int index = noCols * thisRow + thisCol;
     pixels[index] = 0;
