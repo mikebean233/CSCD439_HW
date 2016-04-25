@@ -31,7 +31,7 @@ int  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char **he
     //cudaMemset(d_array, 0, arraySizeInBytes);
 
     // copy the cpu memory to the gpu
-    cudoMemcpy(dPixels, pixels, arraySizeInBytes, cudaMemcpyHostToDevice);
+    cudaMemcpy(dPixels, pixels, arraySizeInBytes, cudaMemcpyHostToDevice);
 
     // run the kernel
     pgmDrawEdge<<<gridSize, blockSize>>>(dPixels, numRows, numCols, edgeWidth);
@@ -40,7 +40,7 @@ int  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char **he
     cudaMemcpy(pixels, dPixels, arraySizeInBytes, cudaMemcpyDeviceToHost);
 
     // release the device array
-    cudaFree(d_array);
+    cudaFree(dPixels);
     return 0;
 }
 
