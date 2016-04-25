@@ -59,9 +59,9 @@ __global__ void  gpuDrawEdge(int *pixels, int numRows, int numCols, int edgeWidt
     int thisCol  = threadId % numCols;
 
     if(thisRow <= edgeWidth ||
-       thisRow >= numCols - edgeWidth ||
+       thisRow >= numRows - edgeWidth ||
        thisCol <= edgeWidth ||
-       thisCol >= numRows - edgeWidth){
+       thisCol >= numCols - edgeWidth){
         pixels[threadId] = 0;
     }
 }
