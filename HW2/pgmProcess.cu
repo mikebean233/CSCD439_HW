@@ -20,6 +20,7 @@ __device__ float distance( int p1[], int p2[] )
 }
 
 int  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char **header) {
+    cudaDeviceReset();
     int* dPixels;
     int blockSize = 512;
     int gridSize = ceil(((double)numRows * (double)numCols) / (double) blockSize);
