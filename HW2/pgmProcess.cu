@@ -59,7 +59,7 @@ int pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row,
     return 0;
 }
 
-__global__ void  gpuDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth) {
+__global__ void gpuDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth) {
     int threadId = blockIdx.x * blockDim.x + threadIdx.x;
     int thisRow  = threadId / numCols;
     int thisCol  = threadId % numCols;
@@ -70,12 +70,6 @@ __global__ void  gpuDrawEdge(int *pixels, int numRows, int numCols, int edgeWidt
        thisCol >= numCols - edgeWidth){
         pixels[threadId] = 0;
     }
-
-    int i;
-    for(i = 0; i < 3*512; ++i){
-        pixels[threadId] = 0;
-    }
-    pixels[threadId] = 0;
 }
 
 __global__ void gpuDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header) {
