@@ -53,7 +53,7 @@ int pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row,
     return 0;
 }
 
-__host__ __device__ void  gpuDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth) {
+__global__ void  gpuDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth) {
     int threadId = blockIdx.x * blockDim.x + threadIdx.x;
     int thisRow  = threadId / numCols;
     int thisCol  = threadId % numCols;
@@ -66,7 +66,7 @@ __host__ __device__ void  gpuDrawEdge(int *pixels, int numRows, int numCols, int
     }
 }
 
-__host__ __device__ void gpuDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header) {
+__global__ void gpuDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header) {
     int threadId = blockIdx.x * blockDim.x + threadIdx.x;
     int thisRow  = threadId / numCols;
     int thisCol  = threadId % numCols;
@@ -74,7 +74,7 @@ __host__ __device__ void gpuDrawCircle(int *pixels, int numRows, int numCols, in
 
 }
 
-__host__ __device__ void gpuDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col) {
+__global__ void gpuDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col) {
 
 }
 
