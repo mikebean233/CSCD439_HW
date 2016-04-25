@@ -1,4 +1,4 @@
-#include "pgmUtility.h"
+//#include "pgmUtility.h"
 /**
  *  Function Name:
  *      distance()
@@ -16,15 +16,15 @@ __device__ float distance( int p1[], int p2[] )
     return 0.0;
 }
 
-int**  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char **header) {
+int*  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char **header) {
     return 0;
 }
 
-int** pgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header) {
+int* pgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header) {
     return 0;
 }
 
-int** pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col){
+int* pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col){
     return 0;
 }
 
