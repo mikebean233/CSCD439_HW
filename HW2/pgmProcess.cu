@@ -77,16 +77,16 @@ int pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row,
     int vertical = 0;
     float slope = 0.0;
     if(p1col < p2col){
-        pa[0] = p1Row;
-        pa[1] = p1Col;
-        pb[0] = p2Row;
-        pb[1] = p2Col;
+        pa[0] = p1row;
+        pa[1] = p1col;
+        pb[0] = p2row;
+        pb[1] = p2col;
     }
     else{
-        pa[0] = p2Row;
-        pa[1] = p2Col;
-        pb[0] = p1Row;
-        pb[1] = p1Col;
+        pa[0] = p2row;
+        pa[1] = p2col;
+        pb[0] = p1row;
+        pb[1] = p1col;
     }
 
     if(pa[1] == pb[1])
