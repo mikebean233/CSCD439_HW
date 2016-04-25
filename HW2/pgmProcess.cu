@@ -103,6 +103,8 @@ int pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row,
     // copy the cpu memory to the gpu
     cudaMemcpy(dPixels, pixels, arraySizeInBytes, cudaMemcpyHostToDevice);
 
+    printf("slope: %d\n", slope);
+
     // run the kernel
     gpuDrawLine<<<gridSize, blockSize>>>(dPixels, numRows, numCols, pa[0], pa[1], vertical, slope, noSamples);
 
@@ -144,6 +146,7 @@ __global__ void gpuDrawLine(int *pixels, int noRows, int noCols, int startRow, i
     int threadId = blockIdx.x * blockDim.x + threadIdx.x;
     int position = startCol + threadId;
     int thisRow, thisCol;
+
     if(vertical){
         thisRow = startRow + position;
         thisCol = startCol;
