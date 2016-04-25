@@ -106,7 +106,7 @@ int pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row,
     cudaMemcpy(dPixels, pixels, arraySizeInBytes, cudaMemcpyHostToDevice);
 
     // run the kernel
-    gpuDrawLine<<<gridSize, blockSize>>>(dPixels, norows, nocol, pa[0], pa[1], vertical, slope, noSamples);
+    gpuDrawLine<<<gridSize, blockSize>>>(dPixels, numRows, numCols, pa[0], pa[1], vertical, slope, noSamples);
 
     // copy the results back to the host array
     cudaMemcpy(pixels, dPixels, arraySizeInBytes, cudaMemcpyDeviceToHost);
