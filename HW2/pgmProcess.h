@@ -11,6 +11,6 @@
 __device__ float distance( int p1[], int p2[] );
 
 
-__device__ void  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth);
-__device__ void pgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius);
-__device__ void pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col);
+__device__ void gpuDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth);
+__device__ void gpuDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius);
+__device__ void gpuDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col);

@@ -34,7 +34,7 @@ int  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char **he
     cudaMemcpy(dPixels, pixels, arraySizeInBytes, cudaMemcpyHostToDevice);
 
     // run the kernel
-    pgmDrawEdge<<<gridSize, blockSize>>>(dPixels, numRows, numCols, edgeWidth);
+    gpuDrawEdge<<<gridSize, blockSize>>>(dPixels, numRows, numCols, edgeWidth);
 
     // copy the results back to the host array
     cudaMemcpy(pixels, dPixels, arraySizeInBytes, cudaMemcpyDeviceToHost);
@@ -52,7 +52,7 @@ int pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row,
     return 0;
 }
 
-__device__ void  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth) {
+__device__ void  gpuDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth) {
     int threadId = blockIdx.x * blockDim.x + threadIdx.x;
     int thisRow  = threadId / numCols;
     int thisCol  = threadId % numCols;
@@ -65,7 +65,7 @@ __device__ void  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidt
     }
 }
 
-__device__ void pgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header) {
+__device__ void gpuDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int centerCol, int radius, char **header) {
     int threadId = blockIdx.x * blockDim.x + threadIdx.x;
     int thisRow  = threadId / numCols;
     int thisCol  = threadId % numCols;
@@ -73,8 +73,8 @@ __device__ void pgmDrawCircle(int *pixels, int numRows, int numCols, int centerR
 
 }
 
-__device__ void pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col){
+__device__ void gpuDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col) {
 
-
+}
 
 
