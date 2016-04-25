@@ -23,6 +23,7 @@ int  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char **he
     int* dPixels;
     int blockSize = 512;
     int gridSize = ceil(((double)numRows * (double)numCols) / (double) blockSize);
+    printf("gridsize: %d\n", gridSize);
     int arraySizeInBytes = sizeof(int) * numRows * numCols;
 
     // allocate device memory for the array
