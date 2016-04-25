@@ -21,7 +21,7 @@ __device__ float distance( int p1[], int p2[] )
 
 int  pgmDrawEdge(int *pixels, int numRows, int numCols, int edgeWidth, char **header) {
     int* dPixels;
-    int blockSize = 512;
+    int blockSize = 64;
     int gridSize = ceil(((double)numRows * (double)numCols) / (double) blockSize);
     printf("gridsize: %d\n", gridSize);
     int arraySizeInBytes = sizeof(int) * numRows * numCols;
