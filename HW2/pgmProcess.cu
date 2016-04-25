@@ -68,6 +68,52 @@ int pgmDrawCircle(int *pixels, int numRows, int numCols, int centerRow, int cent
 }
 
 int pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col){
+    int* dPixels;
+    int blockSize = 64;
+    int arraySizeInBytes = sizeof(int) * numRows * numCols;
+
+    int pa[] = {0,0};
+    int pb[] = {0,0};
+    int vertical = 0;
+    float slope = 0.0;
+    if(p1col < p2col){
+        pa[0] = p1Row;
+        pa[1] = p1Col;
+        pb[0] = p2Row;
+        pb[1] = p2Col;
+    }
+    else{
+        pa[0] = p2Row;
+        pa[1] = p2Col;
+        pb[0] = p1Row;
+        pb[1] = p1Col;
+    }
+
+    if(pa[1] == pb[1])
+        vertical = 1;
+    else
+        slope = (pb[0] - pa[0]) / (pb[1] - pa[1]);
+
+    int startCol = pa[1];
+    int noSamples = (vertical) ? ((pa[0] < pb[0]) ? pb[0] - pa[0] : pa[0] - pb[0]) : pb[1] - pa[0];
+
+    int gridSize = ceil(((double)noSamples) / (double) blockSize);
+
+    // allocate device memory for the array
+    cudaMalloc(&dPixels, arraySizeInBytes);
+
+    // copy the cpu memory to the gpu
+    cudaMemcpy(dPixels, pixels, arraySizeInBytes, cudaMemcpyHostToDevice);
+
+    // run the kernel
+    gpuDrawLine<<<gridSize, blockSize>>>(dPixels, noRows, noCol, pa[0], pa[1], vertical, slope, noSamples);
+
+    // copy the results back to the host array
+    cudaMemcpy(pixels, dPixels, arraySizeInBytes, cudaMemcpyDeviceToHost);
+
+    // release the device array
+    cudaFree(dPixels);
+
     return 0;
 }
 
@@ -96,8 +142,20 @@ __global__ void gpuDrawCircle(int *pixels, int numRows, int numCols, int centerR
         pixels[threadId] = 0;
 }
 
-__global__ void gpuDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row, int p1col, int p2row, int p2col, int n) {
-
+__global__ void gpuDrawLine(int *pixels, int noRows, int noCols, int startRow, int startCol, int vertical, float slope, int noSamples);
+    int threadId = blockIdx.x * blockDim.x + threadIdx.x;
+    int position = startCol + threadId;
+    int thisRow, thisCol;
+    if(vertical){
+        thisRow = startRow + position;
+        thisCol = startCol;
+    }
+    else{
+        thisCol = startCol + position;
+        thisRow = startRow + (slope * startRow);
+    }
+    int index = noCols * thisRow + thisCol;
+    pixels[index] = 0;
 }
 
 
