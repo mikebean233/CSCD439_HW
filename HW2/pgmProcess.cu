@@ -106,7 +106,7 @@ int pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row,
     cudaMemcpy(dPixels, pixels, arraySizeInBytes, cudaMemcpyHostToDevice);
 
     // run the kernel
-    gpuDrawLine<<<gridSize, blockSize>>>(dPixels, noRows, noCol, pa[0], pa[1], vertical, slope, noSamples);
+    gpuDrawLine<<<gridSize, blockSize>>>(dPixels, norows, nocol, pa[0], pa[1], vertical, slope, noSamples);
 
     // copy the results back to the host array
     cudaMemcpy(pixels, dPixels, arraySizeInBytes, cudaMemcpyDeviceToHost);
@@ -142,7 +142,7 @@ __global__ void gpuDrawCircle(int *pixels, int numRows, int numCols, int centerR
         pixels[threadId] = 0;
 }
 
-__global__ void gpuDrawLine(int *pixels, int noRows, int noCols, int startRow, int startCol, int vertical, float slope, int noSamples);
+__global__ void gpuDrawLine(int *pixels, int noRows, int noCols, int startRow, int startCol, int vertical, float slope, int noSamples){
     int threadId = blockIdx.x * blockDim.x + threadIdx.x;
     int position = startCol + threadId;
     int thisRow, thisCol;
