@@ -11,6 +11,6 @@ pgmProcessSequential.o: pgmProcessSequential.cpp
 timing.o: timing.cpp
 	g++ -g -c -o timing.o timing.cpp
 
-clean: *.o
+clean:
 	rm *.o
 	rm myPaint*
