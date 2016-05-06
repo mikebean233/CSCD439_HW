@@ -152,8 +152,8 @@ int pgmDrawLine(int *pixels, int numRows, int numCols, char **header, int p1row,
                 continue;
             if (!intInRange(thisCol, 0, numCols - 1, UPPER_INCLUSIVE | LOWER_INCLUSIVE))
                 continue;
-            if(DEBUG)
-                printf("plot(%d, %d)\n", thisRow, thisCol);
+            //if(DEBUG)
+            //    printf("plot(%d, %d)\n", thisRow, thisCol);
 
             i = numRows * thisRow + thisCol;
             pixels[i] = 0;
@@ -185,7 +185,7 @@ int intInRange(int target, int bound1, int bound2, int flags) {
     int upperBound = intMax(bound1, bound2);
     int result = ((target > lowerBound && target < upperBound) || (target == lowerBound && (flags & LOWER_INCLUSIVE)) ||
                   (target == upperBound && (flags & UPPER_INCLUSIVE)));
-
+/*
     if (DEBUG) {
         char *intervalChars = "([)]";
         char *booleanStrings[] = {"false", "true"};
@@ -194,6 +194,6 @@ int intInRange(int target, int bound1, int bound2, int flags) {
         printf("%d in %c%d %d%c : %s\n", target, openIntervalChar, lowerBound, upperBound, closeIntervalChar,
                booleanStrings[result]);
     }
-
+*/
     return result;
 }
