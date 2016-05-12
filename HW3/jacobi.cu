@@ -159,10 +159,10 @@ void runCUDA( float *h_dataA, float* h_dataB, int width, int height, int passes,
    float * temp;
    for(int r=0; r<passes; r++){ 
       //execute the kernel
-      k1 <<< grid, threads, shared_mem_size >>>( d_dataA, d_dataB, pitch/sizeof(float), width);
+      //k1 <<< grid, threads, shared_mem_size >>>( d_dataA, d_dataB, pitch/sizeof(float), width);
       
       //uncomment the following line to use k0, the simple kernel, provived in kernel.cu           
-      //k0 <<< grid, threads >>>( d_dataA, d_dataB, pitch/sizeof(float), width);
+      k0 <<< grid, threads >>>( d_dataA, d_dataB, pitch/sizeof(float), width);
 
       // swap the device data pointers  
       temp    = d_dataA;
@@ -173,7 +173,7 @@ void runCUDA( float *h_dataA, float* h_dataB, int width, int height, int passes,
    // check if kernel execution generated an error
    cudaError_t code = cudaGetLastError();
    if (code != cudaSuccess){
-       printf ("Cuda Kerel Launch error -- %s\n", cudaGetErrorString(code));
+       printf ("Cuda Kernel Launch error -- %s\n", cudaGetErrorString(code));
    }
 
    cudaThreadSynchronize();
