@@ -17,7 +17,7 @@ __global__ void k1( float* g_dataA, float* g_dataB, int floatpitch, int width)
     unsigned int row = blockIdx.y * blockDim.y + threadIdx.y + 1;
     unsigned int col = blockIdx.x * blockDim.x + threadIdx.x + 1;
 
-    if(row >= width - 1 || col >= width)
+    if(row >= width - 1 || col >= width - 1)
         return;
 
 
@@ -50,7 +50,7 @@ __global__ void k1( float* g_dataA, float* g_dataB, int floatpitch, int width)
                               0.1f * s_data[2 * (blockDim.x + 2) + threadIdx.x + 1] + //S
                               0.1f * s_data[2 * (blockDim.x + 2) + threadIdx.x]     + //SW
                               0.1f * s_data[1 * (blockDim.x + 2) + threadIdx.x]     + //W
-                              0.1f * s_data[0 * (blockDim.x + 2) + threadIdx.x]       //NW
+                              0.1f * s_data[1 * (blockDim.x + 2) + threadIdx.x]       //NW
                              ) * 0.95f;
 
 }
