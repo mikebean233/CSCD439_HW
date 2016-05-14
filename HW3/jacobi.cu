@@ -17,7 +17,7 @@ int device = 0;
 
 ////////////////////////////////////////////////////////////////////////////////
 // declaration, forward
-void runCUDA( float *h_dataA, float* h_dataB, int width, int height, int passes, int threadsPerBlock, int shouldPrint);
+void runCUDA( float *h_dataA, float* h_dataB, int width, int height, int passes, int threadsPerBlock, int shouldPrint, int kernelNo);
 void runSerial( float * h_dataA, float * h_dataB, int width, int height, int passes, int shouldPrint);
 void printArray(float *arr, int rows, int cols, int shouldPrint);
 float * serial (float *a1, float*a2, int width, int height, int passes) ;
@@ -33,7 +33,7 @@ main( int argc, char** argv)
 {
 
    // jacobi threadsperblock passes width height [p]
-   if(argc < 5 ){
+   if(argc < 6 ){
    
       usage();
       return 1;
@@ -43,10 +43,11 @@ main( int argc, char** argv)
    int passes = atoi(argv[2]);
    int width = atoi(argv[3]);
    int height = atoi(argv[4]);
+   int kernelNo = atoi(argv[5]);
    int shouldPrint=0;
    
-   if(argc == 6 ) {
-      if (argv[5][0]=='p'){
+   if(argc == 7 ) {
+      if (argv[6][0]=='p'){
          
          shouldPrint=1;
       } else {
@@ -66,7 +67,7 @@ main( int argc, char** argv)
       runSerial(h_dataA, h_dataB, width, height, passes, shouldPrint);
    } else {
 
-      runCUDA(h_dataA, h_dataB, width, height, passes, threadsPerBlock, shouldPrint);
+      runCUDA(h_dataA, h_dataB, width, height, passes, threadsPerBlock, shouldPrint, kernelNo);
    }
    
    // Clean up Memory
@@ -77,7 +78,7 @@ main( int argc, char** argv)
 ////////////////////////////////////////////////////////////////////////////////
 //! Run the CUDA version
 ////////////////////////////////////////////////////////////////////////////////
-void runCUDA( float *h_dataA, float* h_dataB, int width, int height, int passes, int threadsPerBlock, int shouldPrint){
+void runCUDA( float *h_dataA, float* h_dataB, int width, int height, int passes, int threadsPerBlock, int shouldPrint, int kernelNo){
 
 
    // Use card 0  (See top of file to make sure you are using your assigned device.)
@@ -157,12 +158,15 @@ void runCUDA( float *h_dataA, float* h_dataB, int width, int height, int passes,
    sdkStartTimer(&timer);
      
    float * temp;
-   for(int r=0; r<passes; r++){ 
-      //execute the kernel
-      //k1 <<< grid, threads, shared_mem_size >>>( d_dataA, d_dataB, pitch/sizeof(float), width);
-      
-      //uncomment the following line to use k0, the simple kernel, provived in kernel.cu           
-      k0 <<< grid, threads >>>( d_dataA, d_dataB, pitch/sizeof(float), width);
+   for(int r=0; r<passes; r++) {
+      switch (kernelNo) {
+         case 0:
+            k0 <<< grid, threads >>> (d_dataA, d_dataB, pitch / sizeof(float), width);
+            break;
+         case 1:
+            k1 <<< grid, threads, shared_mem_size >>>( d_dataA, d_dataB, pitch/sizeof(float), width);
+            break;
+      }
 
       // swap the device data pointers  
       temp    = d_dataA;
@@ -326,7 +330,7 @@ void printArray(float *arr, int rows, int cols, int shouldPrint){
 /* Prints a short but informative message about program usage.*/
 void usage(){
 
-   fprintf(stderr, "usage: jacobi threadsperblock passes width height [p]\n");
+   fprintf(stderr, "usage: jacobi threadsperblock passes width height kernelNo [p]\n");
    fprintf(stderr, "               (if threadsperblock == 0, serial code is run)\n");
 }
 
