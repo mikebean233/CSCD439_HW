@@ -91,10 +91,15 @@ __global__ void reduce3(float *in, float *out, int n)
 
     sdata[tid] = (i < n) ? in[i] : 0;
     int activeCount = n / 2;
+    int leftData  = 0;
+    int rightData = 0;
+
     for(; activeCount > 0; activeCount /= 2)
     {
-        if(tid < activeCount)
-            sdata[tid] = sdata[tid] + sdata[tid] + sdata[tid + activeCount];
+        leftData  = sdata[tid];
+        rightData = sdata[tid + activeCount];
+        if(tid < activeCount && rightData > leftData)
+            sdata[tid] = rightData;
     }
 }
 
