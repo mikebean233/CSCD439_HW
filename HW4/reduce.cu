@@ -101,6 +101,7 @@ __global__ void reduce3(float *in, float *out, int n)
         if(tid < activeCount && rightData > leftData)
             sdata[tid] = rightData;
     }
+    if (tid == 0) out[blockIdx.x] = sdata[0];
 }
 
 void usage()
