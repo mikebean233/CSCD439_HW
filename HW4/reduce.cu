@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
            if(launch % 2 == 1) // odd launch
                reduce2<<<grid, block, tile_width * sizeof(float)>>>(d_in, d_out, num_in);
            else
-               reduce2<<<grid, block, tile_width * sizeof(float)>>>(d_out, d_in, num_in);
+               reduce3<<<grid, block, tile_width * sizeof(float)>>>(d_out, d_in, num_in);
 
            cudaDeviceSynchronize();
            
@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
            }
            else
            {
-               //copy the ouput of last lauch back to host,
+               //copy the ouput of last launch back to host,
                if(launch % 2 == 1)
                   cudaMemcpy(h_out, d_out, sizeof(float) * num_out, cudaMemcpyDeviceToHost);
                else
