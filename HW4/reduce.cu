@@ -107,11 +107,12 @@ __global__ void reduce3(float *in, float *out, int n)
         __syncthreads();
     }
     if (tid == 0) out[blockIdx.x] = sdata[0];
+
 }
 
 void usage()
 {
-   printf("Usage: ./progName blockWidth numElementsInput p \n");
+   printf("Usage: ./progName blockWidth numElementsInput kernelNumber(2|3) [p] \n");
 }
 
 
@@ -122,18 +123,19 @@ int main(int argc, char *argv[])
 
    // to run this program: ./a.out blockWidth numElements p
    int shouldPrint = 0;
-   if(argc < 3 || argc > 4) {
+   if(argc < 4 || argc > 5) {
       usage();
       return 1;
-   } else  if(argc == 3){
+   } else  if(argc == 4){
          shouldPrint = 0;
-   } else if(argv[3][0]=='p'){
+   } else if(argv[4][0]=='p'){
          shouldPrint=1;
    } else {
          usage();
          return 1;
    }
-  
+
+   int kernelNo = atoi[3];
    //
    int tile_width = atoi(argv[1]);
    if ( ! tile_width )
@@ -200,11 +202,18 @@ int main(int argc, char *argv[])
        //cudaMemcpy(h_out, d_out, sizeof(float) * num_block, cudaMemcpyDeviceToHost);
        while( 1 )
        {
-           if(launch % 2 == 1) // odd launch
-               reduce3<<<grid, block, tile_width * sizeof(float)>>>(d_in, d_out, num_in);
-           else
-               reduce3<<<grid, block, tile_width * sizeof(float)>>>(d_out, d_in, num_in);
-
+           if(kernelNo == 2) {
+               if (launch % 2 == 1) // odd launch
+                   reduce2 << < grid, block, tile_width * sizeof(float) >> > (d_in, d_out, num_in);
+               else
+                   reduce2 << < grid, block, tile_width * sizeof(float) >> > (d_out, d_in, num_in);
+           }
+           else{
+               if (launch % 2 == 1) // odd launch
+                   reduce3 << < grid, block, tile_width * sizeof(float) >> > (d_in, d_out, num_in);
+               else
+                   reduce3 << < grid, block, tile_width * sizeof(float) >> > (d_out, d_in, num_in);
+           }
            cudaDeviceSynchronize();
            
            // if the number of local max returned by kernel is greater than the threshold,
@@ -243,7 +252,7 @@ int main(int argc, char *argv[])
 
   printf("The output array from device is:\n");
   //if(shouldPrint)
-      printArray(h_out, num_out); 
+      printArray(h_out, n);
 
 
   //------------------------ now time the sequential code on CPU------------------------------
