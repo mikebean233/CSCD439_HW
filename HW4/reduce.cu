@@ -97,7 +97,7 @@ __global__ void reduce3(float *in, float *out, int n)
     int leftData  = 0;
     int rightData = 0;
 
-    for(; activeCount >= 0; activeCount /= 2)
+    for(; activeCount > 0; activeCount /= 2)
     {
         leftData  = sdata[tid];
         rightData = sdata[tid + activeCount];
