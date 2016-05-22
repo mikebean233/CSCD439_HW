@@ -106,8 +106,8 @@ __global__ void reduce3(float *in, float *out, int n)
 
         __syncthreads();
     }
-    if (tid == 0) out[blockIdx.x] = sdata[0];
-
+    //if (tid == 0) out[blockIdx.x] = sdata[0];
+    out[i] = sdata[tid];
 }
 
 void usage()
