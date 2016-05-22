@@ -90,7 +90,10 @@ __global__ void reduce3(float *in, float *out, int n)
     unsigned int i = blockIdx.x*blockDim.x + threadIdx.x;
 
     sdata[tid] = (i < n) ? in[i] : 0;
-    int activeCount = n / 2;
+
+    __syncthreads();
+
+    int activeCount = blockDim.x / 2;
     int leftData  = 0;
     int rightData = 0;
 
@@ -100,6 +103,8 @@ __global__ void reduce3(float *in, float *out, int n)
         rightData = sdata[tid + activeCount];
         if(tid < activeCount && rightData > leftData)
             sdata[tid] = rightData;
+
+        __syncthreads();
     }
     if (tid == 0) out[blockIdx.x] = sdata[0];
 }
@@ -219,7 +224,6 @@ int main(int argc, char *argv[])
                   cudaMemcpy(h_out, d_out, sizeof(float) * num_out, cudaMemcpyDeviceToHost);
                else
                   cudaMemcpy(h_out, d_in, sizeof(float) * num_out, cudaMemcpyDeviceToHost);
-               
                break;
            }
            launch ++;
