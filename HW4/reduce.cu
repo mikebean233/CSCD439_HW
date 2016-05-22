@@ -61,7 +61,7 @@ __global__ void reduce2(float *in, float *out, int n)
     unsigned int i = blockIdx.x*blockDim.x + threadIdx.x;
 
     sdata[tid] = (i < n) ? in[i] : 0;
-
+    sdata[tid + ]
     __syncthreads();
 
     // do reduction in shared mem
@@ -251,8 +251,8 @@ int main(int argc, char *argv[])
   printf(" done! GPU time cost in second: %f\n", average_simple_time / 1000);
 
   printf("The output array from device is:\n");
-  //if(shouldPrint)
-      printArray(h_out, n);
+
+  printArray(h_out, (shouldPrint) ? n : 1);
 
 
   //------------------------ now time the sequential code on CPU------------------------------
