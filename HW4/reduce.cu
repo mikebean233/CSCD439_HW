@@ -101,8 +101,8 @@ __global__ void reduce3(float *in, float *out, int n)
     {
         leftData  = sdata[tid];
         rightData = sdata[tid + activeCount];
-        if(tid < activeCount && rightData > leftData)
-            sdata[tid] = rightData;
+        if(tid < activeCount)
+            sdata[tid] = (rightData > leftData) ? rightData : leftData;
 
         __syncthreads();
     }
