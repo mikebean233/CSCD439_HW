@@ -97,7 +97,7 @@ __global__ void reduce3(float *in, float *out, int n)
     int leftData  = 0;
     int rightData = 0;
 
-    for(; activeCount > 0; activeCount /= 2)
+    for(; activeCount >= 0; activeCount /= 2)
     {
         leftData  = sdata[tid];
         rightData = sdata[tid + activeCount];
@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
        while( 1 )
        {
            if(launch % 2 == 1) // odd launch
-               reduce2<<<grid, block, tile_width * sizeof(float)>>>(d_in, d_out, num_in);
+               reduce3<<<grid, block, tile_width * sizeof(float)>>>(d_in, d_out, num_in);
            else
                reduce3<<<grid, block, tile_width * sizeof(float)>>>(d_out, d_in, num_in);
 
