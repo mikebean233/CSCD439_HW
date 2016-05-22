@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
          return 1;
    }
 
-   int kernelNo = atoi[3];
+   int kernelNo = atoi(argv[3]);
    //
    int tile_width = atoi(argv[1]);
    if ( ! tile_width )
