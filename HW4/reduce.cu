@@ -93,24 +93,13 @@ __global__ void reduce3(float *in, float *out, int n)
     __syncthreads();
 
     int activeCount = blockDim.x / 2;
-    int leftData  = 0;
-    int rightData = 0;
 
     for(; activeCount > 0; activeCount /= 2)
     {
-        leftData  = sdata[tid];
-        rightData = sdata[tid + activeCount];
-
-        if(tid < activeCount)
-        if(sdata[tid] < sdata[tid + activeCount])
-            sdata[tid] = rightData;
-
-        /*
         if(tid < activeCount)
             if(sdata[tid] < sdata[tid + activeCount])
                 sdata[tid] = sdata[tid + activeCount];
-            //sdata[tid] = (rightData > leftData) ? rightData : leftData;
-        */
+
         __syncthreads();
     }
     if (tid == 0) out[blockIdx.x] = sdata[0];
