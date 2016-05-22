@@ -61,7 +61,6 @@ __global__ void reduce2(float *in, float *out, int n)
     unsigned int i = blockIdx.x*blockDim.x + threadIdx.x;
 
     sdata[tid] = (i < n) ? in[i] : 0;
-    sdata[tid + ]
     __syncthreads();
 
     // do reduction in shared mem
