@@ -7,11 +7,11 @@
 #define MAX_ARG_COUNT 3
 #define MAX_VALUE 10000
 
-void usage(char* programName, int outFileDisc, int exitStatus);
+void usage(char* programName, FILE* outFileDisc, int exitStatus);
 void errorExit(char* message, int exitStatus);
 void printArray(uint* array, int length);
 
-__global__ mergSort(uint* in, uint* out, uint n){
+__global__ void mergSort(uint* in, uint* out, uint n){
     int threadId = blockDim.x * blockIdx.x + threadIdx.x;
     if(threadId > n)
         return;
@@ -29,11 +29,16 @@ int main(int argc, char** argv){
         usage(argv[0], stderr, 1);
 
     n = atoi(argv[1]);
-    blockDim = {atoi(argv[2]), 1, 1};
-    gridDIm  = {ceil((float)n / blockDim.x), 1, 1};
+    blockDim.x = atoi(argv[2]);
+    blockDim.y = 1;
+    blockDim.z = 1;
+
+    gridDim.x = ceil((float)n / blockDim.x);
+    gridDim.y = 1;
+    gridDim.z = 1;
 
     if(n % 2 != 0)
-        errorExit("Error: the number of input elements must be even", 1);
+        errorExit((char*)"Error: the number of input elements must be even", 1);
 
     // Allocate memory
     h_inArray  = (uint*) calloc(sizeof(uint), n);
@@ -46,27 +51,19 @@ int main(int argc, char** argv){
     checkCudaErrors(cudaMemcpy(d_inArray, h_inArray, n * sizeof(uint), cudaMemcpyHostToDevice));
 
 
-    if(h_inArray == NULL || h_outArray == null)
-        errorExit("Error: host was unable to allocate array memory", 2);
+    if(h_inArray == NULL || h_outArray == NULL)
+        errorExit((char*)"Error: host was unable to allocate array memory", 2);
 
     srand(time());
 
     uint i;
-    for(; i < n; ++i){
+    for(i = 0; i < n; ++i){
          h_inArray[i] = rand() % MAX_VALUE;
     }
 
-
-    mergSort<<<blockDim, gridDim>>>(d_inArray, n);
+    mergSort<<<blockDim, gridDim>>>(d_inArray, d_outArray, n);
 
     checkCudaErrors(cudaMemcpy(h_outArray, d_outArray, n * sizeof(uint), cudaMemcpyDeviceToHost));
-
-
-
-
-
-
-
 }
 
 void errorExit(char* message, int exitStatus){
@@ -74,7 +71,7 @@ void errorExit(char* message, int exitStatus){
     exit(exitStatus);
 }
 
-void usage(char* programName, int outFileDisc, int exitStatus){
+void usage(char* programName, FILE* outFileDisc, int exitStatus){
     fprintf(outFileDisc, "usage: %s arraySize blockSize");
     exit(exitStatus);
 }
