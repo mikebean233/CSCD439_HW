@@ -48,7 +48,7 @@ int main(int argc, char** argv){
 
 
     // Copy the host array to device array
-    checkCudaErrors(cudaMemcpy(d_inArray, h_inArray, n * sizeof(uint), cudaMemcpyHostToDevice));
+    cudaMemcpy(d_inArray, h_inArray, n * sizeof(uint), cudaMemcpyHostToDevice);
 
 
     if(h_inArray == NULL || h_outArray == NULL)
