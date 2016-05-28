@@ -54,7 +54,7 @@ int main(int argc, char** argv){
     if(h_inArray == NULL || h_outArray == NULL)
         errorExit((char*)"Error: host was unable to allocate array memory", 2);
 
-    srand(time());
+    srand(time(NULL));
 
     uint i;
     for(i = 0; i < n; ++i){
@@ -63,7 +63,7 @@ int main(int argc, char** argv){
 
     mergSort<<<blockDim, gridDim>>>(d_inArray, d_outArray, n);
 
-    checkCudaErrors(cudaMemcpy(h_outArray, d_outArray, n * sizeof(uint), cudaMemcpyDeviceToHost));
+    cudaMemcpy(h_outArray, d_outArray, n * sizeof(uint), cudaMemcpyDeviceToHost);
 }
 
 void errorExit(char* message, int exitStatus){
