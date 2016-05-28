@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cuda_runtime.h>
+#include <helper_cuda.h>
 #include <time.h>
 
 #define MIN_ARG_COUNT 3
