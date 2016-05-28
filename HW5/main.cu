@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cuda_runtime.h>
-#include <helper_cuda.h>
 #include <time.h>
 
 #define MIN_ARG_COUNT 3
@@ -44,8 +43,8 @@ int main(int argc, char** argv){
     // Allocate memory
     h_inArray  = (uint*) calloc(sizeof(uint), n);
     h_outArray = (uint*) calloc(sizeof(uint), n);
-    checkCudaErrors(cudaMalloc((void **)&d_inArray, n * sizeof(uint)));
-    checkCudaErrors(cudaMalloc((void **)&d_outArray, n * sizeof(uint)));
+    cudaMalloc((void **)&d_inArray, n * sizeof(uint));
+    cudaMalloc((void **)&d_outArray, n * sizeof(uint));
 
 
     // Copy the host array to device array
