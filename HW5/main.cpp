@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     const uint DIR = 1;
     const uint numValues = 65536;
 
-    int doPrint = (argv[2][0] == 'p');
+    int doPrint = (argc >2 && argv[2][0] == 'p');
 
     printf("%s Starting...\n\n", argv[1]);
 
