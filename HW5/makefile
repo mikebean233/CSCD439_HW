@@ -39,7 +39,7 @@ include ./findcudalib.mk
 CUDA_PATH ?= "/usr/local/cuda-7.0"
 
 # internal flags
-NVCCFLAGS   := -m${OS_SIZE}
+NVCCFLAGS   := -m${OS_SIZE} -lm
 CCFLAGS     :=
 NVCCLDFLAGS :=
 LDFLAGS     :=
