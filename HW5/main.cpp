@@ -41,7 +41,11 @@ int main(int argc, char **argv)
     const uint DIR = 1;
     const uint numValues = 65536;
 
+    int doPrint = (argv[2][0] == 'p');
+
     printf("%s Starting...\n\n", argv[1]);
+
+
 
     int dev = findCudaDevice(argc, (const char **) argv);
 
@@ -89,7 +93,8 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaDeviceSynchronize());
     sdkResetTimer(&hTimer);
     sdkStartTimer(&hTimer);
-    printArrays(h_SrcKey, h_DstKey, h_SrcVal, h_DstVal, N);
+    if(doPrint)
+        printArrays(h_SrcKey, h_DstKey, h_SrcVal, h_DstVal, N);
     mergeSort(
         d_DstKey,
         d_DstVal,
@@ -108,7 +113,8 @@ int main(int argc, char **argv)
     printf("Reading back GPU merge sort results...\n");
     checkCudaErrors(cudaMemcpy(h_DstKey, d_DstKey, N * sizeof(uint), cudaMemcpyDeviceToHost));
     checkCudaErrors(cudaMemcpy(h_DstVal, d_DstVal, N * sizeof(uint), cudaMemcpyDeviceToHost));
-    printArrays(h_SrcKey, h_DstKey, h_SrcVal, h_DstVal, N);
+    if(doPrint)
+        printArrays(h_SrcKey, h_DstKey, h_SrcVal, h_DstVal, N);
 
 /*check last few elements
     for( int i = N - 10; i < N; i ++ )
