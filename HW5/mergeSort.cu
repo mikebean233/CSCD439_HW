@@ -569,7 +569,7 @@ __global__ void k(uint *d_DstKey,
     if(threadId > N)
         return;
 
-    int chunkSize = sizeSize / blockDim.x;
+    int chunkSize = tileSize / blockDim.x;
     uint blockIndex = blockIdx.y * gridDim.x + blockIdx.x;
     uint firstElIndex = 2 * tileSize * blockIndex;
 
@@ -581,19 +581,19 @@ __global__ void k(uint *d_DstKey,
 
 
     int i = 0;
-    for(; i < chunkSize; ++i;){
+    for(; i < chunkSize; ++i){
         int leftIndex  = i + chunkSize * threadIdx.x;
         int rightIndex = leftIndex + tileSize;
         int leftElement  = d_SrcKey[leftIndex];
         int rightElement = d_SrcKey[rightIndex];
 
-        leftRank  = binarySearchInclusive(leftElement,  d_SrcKey + firstElIndex,              tileSize, tileSize) + binarySearchExclusive(leftElement,  d_SrcKey + (firstElement + tileSize), tileSize, tileSize);
-        rightRank = binarySearchInclusive(rightElement, d_SrcKey + (firstElement + tileSize), tileSize, tileSize) + binarySearchExclusive(rightElement, d_SrcKey + firstElement,              tileSize, tileSize);
+        leftRank  = binarySearchInclusive(leftElement,  d_SrcKey + firstElIndex,              tileSize, tileSize) + binarySearchExclusive(leftElement,  d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize);
+        rightRank = binarySearchInclusive(rightElement, d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize) + binarySearchExclusive(rightElement, d_SrcKey + firstElIndex,              tileSize, tileSize);
 
         d_DstKey[leftRank] = leftValue;
-        d_DstVal[leftRank] = d_srcVal[leftIndex];
+        d_DstVal[leftRank] = d_SrcVal[leftIndex];
         d_DstKey[rightRank] = rightValue;
-        d_DstVal[rightRank] = d_srcVal[rightIndex];
+        d_DstVal[rightRank] = d_SrcVal[rightIndex];
     }
 
 
