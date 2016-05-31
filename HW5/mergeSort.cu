@@ -591,7 +591,7 @@ extern "C" void mergeSort(
     //uint  blockCount = batchSize;
     //uint threadCount = SHARED_SIZE_LIMIT / 2;
 
-    k<<<SHARED_SIZE_LIMIT, 1>>>(d_DstKey, d_DstVal, d_SrcKey, d_SrcVal, arrayLength);
+    k<<<SHARED_SIZE_LIMIT, 1>>>(d_DstKey, d_DstVal, d_SrcKey, d_SrcVal, N);
     return;
 
     uint tileSize = SHARED_SIZE_LIMIT;
