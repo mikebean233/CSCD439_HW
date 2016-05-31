@@ -82,6 +82,8 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaDeviceSynchronize());
     sdkResetTimer(&hTimer);
     sdkStartTimer(&hTimer);
+    printArrays(h_SrcKey, h_DstKey, h_SrcVal, h_DstVal, N);
+
     mergeSort(
         d_DstKey,
         d_DstVal,
