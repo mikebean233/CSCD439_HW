@@ -570,7 +570,28 @@ extern "C" void mergeSort(
     uint sortDir
 )
 {
-    uint stageCount = 0;
+    uint tileSize = SHARED_SIZE_LIMIT;
+
+    uint *ikey, *ival, *okey, *oval;
+
+    ikey = d_SrcKey;
+    ival = d_SrcVal;
+    okey = d_DstKey;
+    oval = d_DstVal;
+    uint i;
+    for(i; i < N; ++i){
+        d_DstKey[i] = d_SrcKey[i];
+        d_DstVal[i] = d_SrcVal[i];
+    }
+
+    //for(; tileSize < N; tileSize *= 2){
+
+
+
+
+    //}
+    /*
+     uint stageCount = 0;
 
     for (uint stride = SHARED_SIZE_LIMIT; stride < N; stride <<= 1, stageCount++);
 
@@ -623,5 +644,6 @@ extern "C" void mergeSort(
         ival = oval;
         oval = t;
     }
+*/
 }
 
