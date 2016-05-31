@@ -19,7 +19,7 @@
 #include <helper_cuda.h>
 #include "mergeSort_common.h"
 
-void printTwoArrays(uint *arraya, uint *arrayb, int size, char* message);
+void printArrays(uint *arraya, uint *arrayb, uint *arrayc, uint *arrayd, int size);
 
 
 
@@ -135,7 +135,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaFree(d_DstKey));
 
 
-    printTwoArrays(h_SrcKey, h_DstKey, N, "h_SrcKey     h_DstKey");
+    printTwoArrays(h_SrcKey, h_DstKey, h_SrcVal, h_DstVal, N);
 
     free(h_DstVal);
     free(h_DstKey);
@@ -146,11 +146,12 @@ int main(int argc, char **argv)
     exit((keysFlag && valuesFlag) ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-void printTwoArrays(uint *arraya, uint *arrayb, int size, char* message){
-    printf("%s\n", message);
+void printArrays(uint *arraya, uint *arrayb, uint *arrayc, uint *arrayd, int size){
+
+    printf("%-10s   %-10s   %-10s   %-10s\n", "h_SrcKey", "h_DstKey", "h_SrcVal", "h_DstVal");
     int i = 0;
     for(i = 0; i < size; ++i){
-        printf("%d   %d\n", arraya[i], arrayb[i]);
+        printf("%-10d   %-10d   %-10d   %-10d\n", arraya[i], arrayb[i], arrayc[i], arrayd[i]);
     }
 }
 
