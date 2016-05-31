@@ -650,8 +650,8 @@ extern "C" void mergeSort(
 
     // if the last iteration didn't store the results in the output arrays, fix it.
     if(okey != d_DstKey) {
-        checkCudaErrors(cudaMemcpy(d_DstKey, iKey, N * sizeof(uint), cudaMemcpyDeviceToDevice));
-        checkCudaErrors(cudaMemcpy(d_DstVal, iVal, N * sizeof(uint), cudaMemcpyDeviceToDevice));
+        checkCudaErrors(cudaMemcpy(d_DstKey, ikey, N * sizeof(uint), cudaMemcpyDeviceToDevice));
+        checkCudaErrors(cudaMemcpy(d_DstVal, ival, N * sizeof(uint), cudaMemcpyDeviceToDevice));
     }
 }
 
