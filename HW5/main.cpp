@@ -14,16 +14,13 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <cuda_runtime.h>
 #include <helper_functions.h>
 #include <helper_cuda.h>
 #include "mergeSort_common.h"
 
-void printArray(uint *array, int size, char* message);
+void printTwoArrays(uint *array, int size, char* message);
 
-
-int SHARED_SIZE_LIMIT;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Test driver
@@ -34,16 +31,11 @@ int main(int argc, char **argv)
     uint *d_SrcKey, *d_SrcVal, *d_BufKey, *d_BufVal, *d_DstKey, *d_DstVal;
     StopWatchInterface *hTimer = NULL;
 
-    const uint   N = atoi(argv[0]); //48 * 1048576;
-
-    SHARED_SIZE_LIMIT = min(1024U, N / 2);
-
-
-
+    const uint   N = atoi(argv[0]);//48 * 1048576;
     const uint DIR = 1;
     const uint numValues = 65536;
 
-    printf("%s Starting...\n\n", argv[0]);
+    printf("%s Starting...\n\n", argv[1]);
 
     int dev = findCudaDevice(argc, (const char **) argv);
 
@@ -150,11 +142,11 @@ int main(int argc, char **argv)
     exit((keysFlag && valuesFlag) ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-void printArray(uint *array, int size, char* message){
+void printTwoArrays(uint *arraya, uint *arrayb, int size, char* message){
     printf("%s\n", message);
     int i = 0;
     for(i = 0; i < size; ++i){
-        printf("%d\n", array[i]);
+        printf("%d   %d\n", arraya[i], arrayb[i]);
     }
 }
 
