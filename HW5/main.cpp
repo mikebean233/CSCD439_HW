@@ -14,6 +14,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <cuda_runtime.h>
 #include <helper_functions.h>
 #include <helper_cuda.h>
@@ -56,7 +57,7 @@ int main(int argc, char **argv)
     h_DstKey = (uint *)malloc(N * sizeof(uint));
     h_DstVal = (uint *)malloc(N * sizeof(uint));
 
-    srand(2009);
+    srand(time(NULL));
 
     for (uint i = 0; i < N; i++)
     {
