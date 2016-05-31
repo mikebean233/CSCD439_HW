@@ -43,6 +43,7 @@ int main(int argc, char **argv)
 
     printf("%s Starting...\n\n", argv[1]);
 
+    cudaDeviceReset();
     int dev = findCudaDevice(argc, (const char **) argv);
 
     if (dev == -1)
