@@ -637,6 +637,8 @@ extern "C" void mergeSort(
     int iterationNumer = 0;
 
     for (; tileSize < N; tileSize *= 2, ++iterationNumer) {
+
+        printf("tileSize: %d     iteration: %d\n", tileSize, iterationNumer);
         k <<< tileSize,  N / (2 * tileSize) >>> (okey, oval, ikey, ival, tileSize, N, sortDir);
 
         uint *t;
