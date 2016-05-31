@@ -19,6 +19,8 @@
 #include <helper_cuda.h>
 #include "mergeSort_common.h"
 
+void printArray(uint *array, int size, char* message);
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Test driver
