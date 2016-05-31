@@ -24,7 +24,7 @@
 
 #include <assert.h>
 #include <helper_cuda.h>
-#include "mergeSort_common.h"
+#include "../mergeSort_common.h"
 
 
 

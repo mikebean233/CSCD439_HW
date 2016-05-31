@@ -20,6 +20,18 @@
 #include "mergeSort_common.h"
 
 
+void mergeSort(
+        uint *d_DstKey,
+        uint *d_DstVal,
+        uint *d_BufKey,
+        uint *d_BufVal,
+        uint *d_SrcKey,
+        uint *d_SrcVal,
+        uint N,
+        uint sortDir);
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // Test driver
 ////////////////////////////////////////////////////////////////////////////////
@@ -133,4 +145,65 @@ int main(int argc, char **argv)
     cudaDeviceReset();
 
     exit((keysFlag && valuesFlag) ? EXIT_SUCCESS : EXIT_FAILURE);
+}
+
+
+void mergeSort(
+        uint *d_DstKey,
+        uint *d_DstVal,
+        uint *d_BufKey,
+        uint *d_BufVal,
+        uint *d_SrcKey,
+        uint *d_SrcVal,
+        uint N
+){
+    uint stageCount = 0;
+
+    for (uint stride = SHARED_SIZE_LIMIT; stride < N; stride <<= 1, stageCount++);
+
+    uint *ikey, *ival, *okey, *oval;
+
+    if (stageCount & 1) {
+        ikey = d_BufKey;
+        ival = d_BufVal;
+        okey = d_DstKey;
+        oval = d_DstVal;
+    }
+    else {
+        ikey = d_DstKey;
+        ival = d_DstVal;
+        okey = d_BufKey;
+        oval = d_BufVal;
+    }
+
+        //    assert(N <= (SAMPLE_STRIDE * MAX_SAMPLE_COUNT));
+    //    assert(N % SHARED_SIZE_LIMIT == 0);
+    mergeSortShared(ikey, ival, d_SrcKey, d_SrcVal, N / SHARED_SIZE_LIMIT, SHARED_SIZE_LIMIT);
+
+    for (uint stride = SHARED_SIZE_LIMIT; stride < N; stride <<= 1) {
+        uint lastSegmentElements = N % (2 * stride);
+
+        //Find sample ranks and prepare for limiters merge
+        generateSampleRanks(d_RanksA, d_RanksB, ikey, stride, N, sortDir);
+
+        //Merge ranks and indices
+        mergeRanksAndIndices(d_LimitsA, d_LimitsB, d_RanksA, d_RanksB, stride, N);
+
+        //Merge elementary intervals
+        mergeElementaryIntervals(okey, oval, ikey, ival, d_LimitsA, d_LimitsB, stride, N);
+
+        if (lastSegmentElements <= stride) {
+            //Last merge segment consists of a single array which just needs to be passed through
+            checkCudaErrors(cudaMemcpy(okey + (N - lastSegmentElements), ikey + (N - lastSegmentElements),lastSegmentElements * sizeof(uint), cudaMemcpyDeviceToDevice));
+            checkCudaErrors(cudaMemcpy(oval + (N - lastSegmentElements), ival + (N - lastSegmentElements),lastSegmentElements * sizeof(uint), cudaMemcpyDeviceToDevice));
+        }
+
+        uint *t;
+        t = ikey;
+        ikey = okey;
+        okey = t;
+        t = ival;
+        ival = oval;
+        oval = t;
+    }
 }
