@@ -106,7 +106,6 @@ int main(int argc, char **argv)
         DIR
     );
 
-    checkCudaErrors(cudaDeviceSynchronize());
     sdkStopTimer(&hTimer);
     printf("Time: %f ms\n", sdkGetTimerValue(&hTimer));
 
