@@ -43,9 +43,8 @@ int main(int argc, char **argv)
 
     printf("%s Starting...\n\n", argv[1]);
 
-    cudaDeviceReset();
     int dev = findCudaDevice(argc, (const char **) argv);
-
+    
     if (dev == -1)
     {
         return EXIT_FAILURE;
@@ -68,14 +67,20 @@ int main(int argc, char **argv)
     fillValues(h_SrcVal, N);
 
     printf("Allocating and initializing CUDA arrays...\n\n");
-    checkCudaErrors(cudaMalloc((void **)&d_DstKey, N * sizeof(uint)));
-    checkCudaErrors(cudaMalloc((void **)&d_DstVal, N * sizeof(uint)));
-    checkCudaErrors(cudaMalloc((void **)&d_BufKey, N * sizeof(uint)));
-    checkCudaErrors(cudaMalloc((void **)&d_BufVal, N * sizeof(uint)));
-    checkCudaErrors(cudaMalloc((void **)&d_SrcKey, N * sizeof(uint)));
-    checkCudaErrors(cudaMalloc((void **)&d_SrcVal, N * sizeof(uint)));
-    checkCudaErrors(cudaMemcpy(d_SrcKey, h_SrcKey, N * sizeof(uint), cudaMemcpyHostToDevice));
-    checkCudaErrors(cudaMemcpy(d_SrcVal, h_SrcVal, N * sizeof(uint), cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMalloc((void **)&d_DstKey,  N * sizeof(uint)));
+    checkCudaErrors(cudaMalloc((void **)&d_DstVal,  N * sizeof(uint)));
+    checkCudaErrors(cudaMalloc((void **)&d_BufKey,  N * sizeof(uint)));
+    checkCudaErrors(cudaMalloc((void **)&d_BufVal,  N * sizeof(uint)));
+    checkCudaErrors(cudaMalloc((void **)&d_SrcKey,  N * sizeof(uint)));
+    checkCudaErrors(cudaMalloc((void **)&d_SrcVal,  N * sizeof(uint)));
+
+    checkCudaErrors(cudaMemset((void *)d_DstKey, 0, N * sizeof(uint)));
+    checkCudaErrors(cudaMemset((void *)d_DstVal, 0, N * sizeof(uint)));
+    checkCudaErrors(cudaMemset((void *)d_SrcKey, 0, N * sizeof(uint)));
+    checkCudaErrors(cudaMemset((void *)d_SrcVal, 0, N * sizeof(uint)));
+
+    checkCudaErrors(cudaMemcpy(d_SrcKey, h_SrcKey,  N * sizeof(uint), cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMemcpy(d_SrcVal, h_SrcVal,  N * sizeof(uint), cudaMemcpyHostToDevice));
 
     printf("Initializing GPU merge sort...\n");
     initMergeSort();
