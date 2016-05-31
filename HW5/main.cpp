@@ -33,6 +33,8 @@ int main(int argc, char **argv)
     StopWatchInterface *hTimer = NULL;
 
     const uint   N = atoi(argv[0]);//48 * 1048576;
+    if(N == 0)
+        N = 48 * 1048576;
     printf("N: %d", N);
     const uint DIR = 1;
     const uint numValues = 65536;
