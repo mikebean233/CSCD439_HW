@@ -637,7 +637,7 @@ extern "C" void mergeSort(
     int iterationNumer = 0;
 
     for (; tileSize < N; tileSize *= 2, ++iterationNumer) {
-        k <<< tileSize,  N / tileSize >>> (okey, oval, ikey, ival, tileSize, N, sortDir);
+        k <<< tileSize,  N / (2 * tileSize) >>> (okey, oval, ikey, ival, tileSize, N, sortDir);
 
         uint *t;
         t = ikey;
@@ -648,6 +648,11 @@ extern "C" void mergeSort(
         oval = t;
     }
 
+    // if the last iteration didn't store the results in the output arrays, fix it.
+    if(okey != d_DstKey) {
+        checkCudaErrors(cudaMemcpy(d_DstKey, iKey, N * sizeof(uint), cudaMemcpyDeviceToDevice));
+        checkCudaErrors(cudaMemcpy(d_DstVal, iVal, N * sizeof(uint), cudaMemcpyDeviceToDevice));
+    }
 }
 
 
