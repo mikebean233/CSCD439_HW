@@ -109,6 +109,7 @@ int main(int argc, char **argv)
 */
 
     printf("Inspecting the results...\n");
+    printArrays(h_SrcKey, h_DstKey, h_SrcVal, h_DstVal, N);
     uint keysFlag = validateSortedKeys(
                         h_DstKey,
                         h_SrcKey,
@@ -137,7 +138,6 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaFree(d_DstKey));
 
 
-    printArrays(h_SrcKey, h_DstKey, h_SrcVal, h_DstVal, N);
 
     free(h_DstVal);
     free(h_DstKey);
