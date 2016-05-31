@@ -588,8 +588,8 @@ __global__ void k(uint *d_DstKey,
         uint leftElement  = d_SrcKey[leftIndex];
         uint rightElement = d_SrcKey[rightIndex];
 
-        uint leftRank  = binarySearchInclusive(leftElement,  d_SrcKey + firstElIndex,              tileSize, tileSize, sortDir) + binarySearchExclusive(leftElement,  d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize, sortDir);
-        uint rightRank = binarySearchInclusive(rightElement, d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize, sortDir) + binarySearchExclusive(rightElement, d_SrcKey + firstElIndex,              tileSize, tileSize, sortDir);
+        uint leftRank  = binarySearchExclusive(leftElement,  d_SrcKey + firstElIndex,              tileSize, tileSize, sortDir) + binarySearchInclusive(leftElement,  d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize, sortDir);
+        uint rightRank = binarySearchExclusive(rightElement, d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize, sortDir) + binarySearchInclusive(rightElement, d_SrcKey + firstElIndex,              tileSize, tileSize, sortDir);
 
         d_DstKey[leftRank] = leftElement;
         d_DstVal[leftRank] = d_SrcVal[leftIndex];
