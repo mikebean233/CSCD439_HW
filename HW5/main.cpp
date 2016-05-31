@@ -19,7 +19,8 @@
 #include <helper_cuda.h>
 #include "mergeSort_common.h"
 
-void printTwoArrays(uint *array, int size, char* message);
+void printTwoArrays(uint *arraya, uint *arrayb, int size, char* message);
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -130,8 +131,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaFree(d_DstKey));
 
 
-    printArray(h_SrcKey, 10, "---- h_SrcKey ----");
-    printArray(h_DstKey, 10, "---- h_DstKey ----");
+    printArray(h_SrcKey, h_DstKey, N, "h_SrcKey     h_DstKey");
 
     free(h_DstVal);
     free(h_DstKey);
