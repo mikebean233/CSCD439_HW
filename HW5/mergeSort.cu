@@ -559,13 +559,45 @@ extern "C" void closeMergeSort(void)
     checkCudaErrors(cudaFree(d_LimitsA));
 }
 __global__ void k(uint *d_DstKey,
-                                      uint *d_DstVal,
-                                      uint *d_SrcKey,
-                                      uint *d_SrcVal,
-                                      uint N
+                  uint *d_DstVal,
+                  uint *d_SrcKey,
+                  uint *d_SrcVal,
+                  uint tileSize,
+                  uint N
 ){
     int threadId = blockDim.x * blockIdx.x + threadIdx.x;
+    if(threadId > N)
+        return;
 
+    int chunkSize = sizeSize / blockDim.x;
+    uint blockIndex = blockIdx.y * gridDim.x + blockIdx.x;
+    uint firstElIndex = 2 * tileSize * blockIndex;
+
+    /*
+     * binarySearchInclusive(uint val, uint *data, uint L, uint stride)
+     * binarySearchExclusive(uint val, uint *data, uint L, uint stride)
+     */
+
+
+
+    int i = 0;
+    for(; i < chunkSize; ++i;){
+        int leftIndex  = i + chunkSize * threadIdx.x;
+        int rightIndex = leftIndex + tileSize;
+        int leftElement  = d_SrcKey[leftIndex];
+        int rightElement = d_SrcKey[rightIndex];
+
+        leftRank  = binarySearchInclusive(leftElement,  d_SrcKey + firstElIndex,              tileSize, tileSize) + binarySearchExclusive(leftElement,  d_SrcKey + (firstElement + tileSize), tileSize, tileSize);
+        rightRank = binarySearchInclusive(rightElement, d_SrcKey + (firstElement + tileSize), tileSize, tileSize) + binarySearchExclusive(rightElement, d_SrcKey + firstElement,              tileSize, tileSize);
+
+        d_DstKey[leftRank] = leftValue;
+        d_DstVal[leftRank] = d_srcVal[leftIndex];
+        d_DstKey[rightRank] = rightValue;
+        d_DstVal[rightRank] = d_srcVal[rightIndex];
+    }
+
+
+    /*
     if(threadId == 0){
         uint i = 0;
         for(; i < N; ++i){
@@ -573,6 +605,7 @@ __global__ void k(uint *d_DstKey,
             d_DstVal[i] = d_SrcVal[i];
         }
     }
+    */
 }
 
 
@@ -591,8 +624,6 @@ extern "C" void mergeSort(
     //uint  blockCount = batchSize;
     //uint threadCount = SHARED_SIZE_LIMIT / 2;
 
-    k<<<SHARED_SIZE_LIMIT, 1>>>(d_DstKey, d_DstVal, d_SrcKey, d_SrcVal, N);
-    return;
 
     uint tileSize = SHARED_SIZE_LIMIT;
 
@@ -602,7 +633,21 @@ extern "C" void mergeSort(
     ival = d_SrcVal;
     okey = d_DstKey;
     oval = d_DstVal;
-    uint i = 0;
+    int iterationNumer = 0;
+    int tileSize = SHARED_SIZE_LIMIT;
+
+    for (; tileSize < N; tileSize *= 2, ++iterationNumer) {
+        k <<< tileSize,  65535>>> (okey, oval, ikey, ival, tileSize, N);
+
+        uint *t;
+        t = ikey;
+        ikey = okey;
+        okey = t;
+        t = ival;
+        ival = oval;
+        oval = t;
+    }
+
 }
 
 
