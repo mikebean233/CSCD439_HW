@@ -126,6 +126,11 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaFree(d_BufKey));
     checkCudaErrors(cudaFree(d_DstVal));
     checkCudaErrors(cudaFree(d_DstKey));
+
+
+    printArray(h_SrcKey, 10, "---- h_SrcKey ----");
+    printArray(h_DstKey, 10, "---- h_DstKey ----");
+
     free(h_DstVal);
     free(h_DstKey);
     free(h_SrcVal);
@@ -134,3 +139,13 @@ int main(int argc, char **argv)
 
     exit((keysFlag && valuesFlag) ? EXIT_SUCCESS : EXIT_FAILURE);
 }
+
+void printArray(uint *array, int size, char* message){
+    printf("%s\n", message);
+    int i = 0;
+    for(i = 0; i < size; ++i){
+        printf("%d\n", array[i]);
+    }
+}
+
+
