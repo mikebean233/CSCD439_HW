@@ -580,6 +580,7 @@ extern "C" void mergeSort(
     oval = d_DstVal;
     uint i;
     for(i; i < N; ++i){
+        printf("copying index %d\n", i);
         d_DstKey[i] = d_SrcKey[i];
         d_DstVal[i] = d_SrcVal[i];
     }
