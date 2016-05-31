@@ -559,7 +559,6 @@ extern "C" void closeMergeSort(void)
     checkCudaErrors(cudaFree(d_LimitsA));
 }
 
-__global__ mcopy(uint* d_SrcKey, uint)
 
 extern "C" void mergeSort(
     uint *d_DstKey,
