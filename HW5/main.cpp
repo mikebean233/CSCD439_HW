@@ -31,7 +31,7 @@ int main(int argc, char **argv)
     uint *d_SrcKey, *d_SrcVal, *d_BufKey, *d_BufVal, *d_DstKey, *d_DstVal;
     StopWatchInterface *hTimer = NULL;
 
-    const uint   N = 48 * 1048576;
+    const uint   N = atoi(argv[0]); //48 * 1048576;
     const uint DIR = 1;
     const uint numValues = 65536;
 
