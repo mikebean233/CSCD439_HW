@@ -569,8 +569,8 @@ __global__ void k(uint *d_DstKey,
     if(threadId == 0){
         uint i = 0;
         for(; i < N; ++i){
-            d_DstKey[i] = 5;//d_SrcKey[i];
-            d_DstVal[i] = 5;//d_SrcVal[i];
+            d_DstKey[i] = d_SrcKey[i];
+            d_DstVal[i] = d_SrcVal[i];
         }
     }
 }

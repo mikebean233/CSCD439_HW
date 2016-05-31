@@ -83,7 +83,7 @@ int main(int argc, char **argv)
     sdkResetTimer(&hTimer);
     sdkStartTimer(&hTimer);
     printArrays(h_SrcKey, h_DstKey, h_SrcVal, h_DstVal, N);
-    /*mergeSort(
+    mergeSort(
         d_DstKey,
         d_DstVal,
         d_BufKey,
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
         N,
         DIR
     );
-*/
+
     checkCudaErrors(cudaDeviceSynchronize());
     sdkStopTimer(&hTimer);
     printf("Time: %f ms\n", sdkGetTimerValue(&hTimer));
