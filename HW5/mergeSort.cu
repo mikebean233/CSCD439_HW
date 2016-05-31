@@ -636,6 +636,9 @@ extern "C" void mergeSort(
     oval = d_DstVal;
     int iterationNumber = 0;
 
+    printf("------------- about to start loop in mergeSort() ---------------\n");
+    printf("tileSize: %d      N: %d\n", tileSize, N);
+    
     for (; tileSize < N; tileSize *= 2, ++iterationNumber) {
 
         printf("tileSize: %d     iteration: %d\n", tileSize, iterationNumber);
