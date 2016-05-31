@@ -634,12 +634,12 @@ extern "C" void mergeSort(
     ival = d_SrcVal;
     okey = d_DstKey;
     oval = d_DstVal;
-    int iterationNumer = 0;
+    int iterationNumber = 0;
 
-    for (; tileSize < N; tileSize *= 2, ++iterationNumer) {
+    for (; tileSize < N; tileSize *= 2, ++iterationNumber) {
 
-        printf("tileSize: %d     iteration: %d\n", tileSize, iterationNumer);
-        k <<< tileSize,  N / (2 * tileSize) >>> (okey, oval, ikey, ival, tileSize, N, sortDir);
+        printf("tileSize: %d     iteration: %d\n", tileSize, iterationNumber);
+        k <<< SHARED_SIZE_LIMIT,  N / (2 * tileSize) >>> (okey, oval, ikey, ival, tileSize, N, sortDir);
 
         uint *t;
         t = ikey;
