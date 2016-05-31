@@ -90,7 +90,7 @@ int main(int argc, char **argv)
     initMergeSort();
 
     printf("Running GPU merge sort...\n");
-    checkCudaErrors(cudaDeviceSynchronize());
+
     sdkResetTimer(&hTimer);
     sdkStartTimer(&hTimer);
     if(doPrint)
