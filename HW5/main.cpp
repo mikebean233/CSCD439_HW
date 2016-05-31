@@ -135,7 +135,7 @@ int main(int argc, char **argv)
     checkCudaErrors(cudaFree(d_DstKey));
 
 
-    printTwoArrays(h_SrcKey, h_DstKey, h_SrcVal, h_DstVal, N);
+    printArrays(h_SrcKey, h_DstKey, h_SrcVal, h_DstVal, N);
 
     free(h_DstVal);
     free(h_DstKey);
