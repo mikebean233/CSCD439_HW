@@ -563,7 +563,7 @@ extern "C" void closeMergeSort(void)
 __device__ uint linearSearchInclusive(uint value, uint* array, uint length){
     uint i = 0;
     uint rank = 0;
-    for(; i < N; ++i){
+    for(; i < length; ++i){
         if(array[i] <= value)
             ++rank;
     }
@@ -573,7 +573,7 @@ __device__ uint linearSearchInclusive(uint value, uint* array, uint length){
 __device__ uint linearSearchExclusive(uint value, uint* array, uint length){
     uint i = 0;
     uint rank = 0;
-    for(; i < N; ++i){
+    for(; i < length; ++i){
         if(array[i] < value)
             ++rank;
     }
