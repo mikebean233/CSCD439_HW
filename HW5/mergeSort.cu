@@ -581,7 +581,13 @@ extern "C" void mergeSort(
     uint i = 0;
     for(i; i < N; ++i){
         //printf("copying index %d\n", i);
-        printf("%-10d   %-10d   %-10d   %-10d\n", d_SrcKey[i], d_DstKey[i], d_SrcVal[i], d_DstVal[i]);
+        //printf("%-10d   %-10d   %-10d   %-10d\n", d_SrcKey[i], d_DstKey[i], d_SrcVal[i], d_DstVal[i]);
+        printf("d_SrcKey[%d]: %d",       i, d_SrcKey[i]);
+        printf("    d_SrcVal[%d]: %d",   i, d_SrcVal[i]);
+        printf("    d_DstKey[%d]: %d",   i, d_DstKey[i]);
+        printf("    d_DstVal[%d]: %d\n", i, d_DstVal[i]);
+
+
         //d_DstKey[i] = d_SrcKey[i];
         //d_DstVal[i] = d_SrcVal[i];
     }
