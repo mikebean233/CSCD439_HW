@@ -56,7 +56,7 @@ static inline __device__ uint nextPowerOfTwo(uint x)
     return 1U << (W - __clz(x - 1));
 }
 
-template<uint sortDir> static inline __device__ uint binarySearchInclusive(uint val, uint *data, uint L, uint stride)
+static inline __device__ uint binarySearchInclusive(uint val, uint *data, uint L, uint stride, uint sortDir)
 {
     if (L == 0)
     {
@@ -78,7 +78,7 @@ template<uint sortDir> static inline __device__ uint binarySearchInclusive(uint 
     return pos;
 }
 
-template<uint sortDir> static inline __device__ uint binarySearchExclusive(uint val, uint *data, uint L, uint stride)
+static inline __device__ uint binarySearchExclusive(uint val, uint *data, uint L, uint stride, uint sortDir)
 {
     if (L == 0)
     {
@@ -136,8 +136,8 @@ template<uint sortDir> __global__ void mergeSortSharedKernel(
         uint valA = baseVal[lPos +      0];
         uint keyB = baseKey[lPos + stride];
         uint valB = baseVal[lPos + stride];
-        uint posA = binarySearchExclusive<sortDir>(keyA, baseKey + stride, stride, stride) + lPos;
-        uint posB = binarySearchInclusive<sortDir>(keyB, baseKey +      0, stride, stride) + lPos;
+        uint posA = binarySearchExclusive(keyA, baseKey + stride, stride, stride, sortDir) + lPos;
+        uint posB = binarySearchInclusive(keyB, baseKey +      0, stride, stride, sortDir) + lPos;
 
         __syncthreads();
         baseKey[posA] = keyA;
@@ -220,18 +220,18 @@ template<uint sortDir> __global__ void generateSampleRanksKernel(
     if (i < segmentSamplesA)
     {
         d_RanksA[i] = i * SAMPLE_STRIDE;
-        d_RanksB[i] = binarySearchExclusive<sortDir>(
+        d_RanksB[i] = binarySearchExclusive(
                           d_SrcKey[i * SAMPLE_STRIDE], d_SrcKey + stride,
-                          segmentElementsB, nextPowerOfTwo(segmentElementsB)
+                          segmentElementsB, nextPowerOfTwo(segmentElementsB), sortDir
                       );
     }
 
     if (i < segmentSamplesB)
     {
         d_RanksB[(stride / SAMPLE_STRIDE) + i] = i * SAMPLE_STRIDE;
-        d_RanksA[(stride / SAMPLE_STRIDE) + i] = binarySearchInclusive<sortDir>(
+        d_RanksA[(stride / SAMPLE_STRIDE) + i] = binarySearchInclusive(
                                                      d_SrcKey[stride + i * SAMPLE_STRIDE], d_SrcKey + 0,
-                                                     segmentElementsA, nextPowerOfTwo(segmentElementsA)
+                                                     segmentElementsA, nextPowerOfTwo(segmentElementsA), sortDir
                                                  );
     }
 }
@@ -292,13 +292,13 @@ __global__ void mergeRanksAndIndicesKernel(
 
     if (i < segmentSamplesA)
     {
-        uint dstPos = binarySearchExclusive<1U>(d_Ranks[i], d_Ranks + segmentSamplesA, segmentSamplesB, nextPowerOfTwo(segmentSamplesB)) + i;
+        uint dstPos = binarySearchExclusive(d_Ranks[i], d_Ranks + segmentSamplesA, segmentSamplesB, nextPowerOfTwo(segmentSamplesB), 1U) + i;
         d_Limits[dstPos] = d_Ranks[i];
     }
 
     if (i < segmentSamplesB)
     {
-        uint dstPos = binarySearchInclusive<1U>(d_Ranks[segmentSamplesA + i], d_Ranks, segmentSamplesA, nextPowerOfTwo(segmentSamplesA)) + i;
+        uint dstPos = binarySearchInclusive(d_Ranks[segmentSamplesA + i], d_Ranks, segmentSamplesA, nextPowerOfTwo(segmentSamplesA), 1U) + i;
         d_Limits[dstPos] = d_Ranks[segmentSamplesA + i];
     }
 }
@@ -358,14 +358,14 @@ template<uint sortDir> inline __device__ void merge(
     {
         keyA = srcAKey[threadIdx.x];
         valA = srcAVal[threadIdx.x];
-        dstPosA = binarySearchExclusive<sortDir>(keyA, srcBKey, lenB, nPowTwoLenB) + threadIdx.x;
+        dstPosA = binarySearchExclusive(keyA, srcBKey, lenB, nPowTwoLenB, sortDir) + threadIdx.x;
     }
 
     if (threadIdx.x < lenB)
     {
         keyB = srcBKey[threadIdx.x];
         valB = srcBVal[threadIdx.x];
-        dstPosB = binarySearchInclusive<sortDir>(keyB, srcAKey, lenA, nPowTwoLenA) + threadIdx.x;
+        dstPosB = binarySearchInclusive(keyB, srcAKey, lenA, nPowTwoLenA, sortDir) + threadIdx.x;
     }
 
     __syncthreads();
@@ -563,7 +563,8 @@ __global__ void k(uint *d_DstKey,
                   uint *d_SrcKey,
                   uint *d_SrcVal,
                   uint tileSize,
-                  uint N
+                  uint N,
+                  uint sortDir
 ){
     int threadId = blockDim.x * blockIdx.x + threadIdx.x;
     if(threadId > N)
@@ -587,8 +588,8 @@ __global__ void k(uint *d_DstKey,
         uint leftElement  = d_SrcKey[leftIndex];
         uint rightElement = d_SrcKey[rightIndex];
 
-        uint leftRank  = binarySearchInclusive(leftElement,  d_SrcKey + firstElIndex,              tileSize, tileSize) + binarySearchExclusive(leftElement,  d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize);
-        uint rightRank = binarySearchInclusive(rightElement, d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize) + binarySearchExclusive(rightElement, d_SrcKey + firstElIndex,              tileSize, tileSize);
+        uint leftRank  = binarySearchInclusive(leftElement,  d_SrcKey + firstElIndex,              tileSize, tileSize, sortDir) + binarySearchExclusive(leftElement,  d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize, sortDir);
+        uint rightRank = binarySearchInclusive(rightElement, d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize, sortDir) + binarySearchExclusive(rightElement, d_SrcKey + firstElIndex,              tileSize, tileSize, sortDir);
 
         d_DstKey[leftRank] = leftElement;
         d_DstVal[leftRank] = d_SrcVal[leftIndex];
@@ -636,7 +637,7 @@ extern "C" void mergeSort(
     int iterationNumer = 0;
 
     for (; tileSize < N; tileSize *= 2, ++iterationNumer) {
-        k <<< tileSize,  65535>>> (okey, oval, ikey, ival, tileSize, N);
+        k <<< tileSize,  65535>>> (okey, oval, ikey, ival, tileSize, N, sortDir);
 
         uint *t;
         t = ikey;
