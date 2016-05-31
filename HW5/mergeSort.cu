@@ -558,6 +558,23 @@ extern "C" void closeMergeSort(void)
     checkCudaErrors(cudaFree(d_LimitsB));
     checkCudaErrors(cudaFree(d_LimitsA));
 }
+__global__ void k(uint *d_DstKey,
+                                      uint *d_DstVal,
+                                      uint *d_SrcKey,
+                                      uint *d_SrcVal,
+                                      uint N
+){
+    int threadId = blockDim.x * blockIdx.x + threadIdx.x;
+
+    if(threadId == 0){
+        uint i = 0;
+        for(; i < N; ++i){
+            d_DstKey[i] = d_SrcKey[i];
+            d_DstVal[i] = d_SrcVal[i];
+        }
+    }
+}
+
 
 
 extern "C" void mergeSort(
@@ -570,6 +587,13 @@ extern "C" void mergeSort(
     uint N,
     uint sortDir
 ) {
+
+    //uint  blockCount = batchSize;
+    //uint threadCount = SHARED_SIZE_LIMIT / 2;
+
+    k<<<SHARED_SIZE_LIMIT, 1>>>(d_DstKey, d_DstVal, d_SrcKey, d_SrcVal, arrayLength);
+    return;
+
     uint tileSize = SHARED_SIZE_LIMIT;
 
     uint * ikey, *ival, *okey, *oval;
