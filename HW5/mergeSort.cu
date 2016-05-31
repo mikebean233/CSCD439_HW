@@ -587,8 +587,8 @@ __global__ void k(uint *d_DstKey,
         int leftElement  = d_SrcKey[leftIndex];
         int rightElement = d_SrcKey[rightIndex];
 
-        leftRank  = binarySearchInclusive(leftElement,  d_SrcKey + firstElIndex,              tileSize, tileSize) + binarySearchExclusive(leftElement,  d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize);
-        rightRank = binarySearchInclusive(rightElement, d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize) + binarySearchExclusive(rightElement, d_SrcKey + firstElIndex,              tileSize, tileSize);
+        int leftRank  = binarySearchInclusive(leftElement,  d_SrcKey + firstElIndex,              tileSize, tileSize) + binarySearchExclusive(leftElement,  d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize);
+        int rightRank = binarySearchInclusive(rightElement, d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize) + binarySearchExclusive(rightElement, d_SrcKey + firstElIndex,              tileSize, tileSize);
 
         d_DstKey[leftRank] = leftValue;
         d_DstVal[leftRank] = d_SrcVal[leftIndex];
@@ -634,7 +634,6 @@ extern "C" void mergeSort(
     okey = d_DstKey;
     oval = d_DstVal;
     int iterationNumer = 0;
-    int tileSize = SHARED_SIZE_LIMIT;
 
     for (; tileSize < N; tileSize *= 2, ++iterationNumer) {
         k <<< tileSize,  65535>>> (okey, oval, ikey, ival, tileSize, N);
