@@ -558,6 +558,29 @@ extern "C" void closeMergeSort(void)
     checkCudaErrors(cudaFree(d_LimitsB));
     checkCudaErrors(cudaFree(d_LimitsA));
 }
+
+
+__device__ uint linearSearchInclusive(uint value, uint* array, uint length){
+    uint i = 0;
+    uint rank = 0;
+    for(; i < N; ++i){
+        if(array[i] <= value)
+            ++rank;
+    }
+    return rank;
+}
+
+__device__ uint linearSearchExclusive(uint value, uint* array, uint length){
+    uint i = 0;
+    uint rank = 0;
+    for(; i < N; ++i){
+        if(array[i] < value)
+            ++rank;
+    }
+    return rank;
+}
+
+
 __global__ void k(uint *d_DstKey,
                   uint *d_DstVal,
                   uint *d_SrcKey,
@@ -574,13 +597,6 @@ __global__ void k(uint *d_DstKey,
     uint blockIndex = blockIdx.y * gridDim.x + blockIdx.x;
     uint firstElIndex = 2 * tileSize * blockIndex;
 
-    /*
-     * binarySearchInclusive(uint val, uint *data, uint L, uint stride)
-     * binarySearchExclusive(uint val, uint *data, uint L, uint stride)
-     */
-
-
-
     int i = 0;
     for(; i < chunkSize; ++i){
         int leftIndex  = i + chunkSize * threadIdx.x;
@@ -588,8 +604,10 @@ __global__ void k(uint *d_DstKey,
         uint leftElement  = d_SrcKey[leftIndex];
         uint rightElement = d_SrcKey[rightIndex];
 
-        uint leftRank  = binarySearchExclusive(leftElement,  d_SrcKey + firstElIndex,              tileSize, tileSize, sortDir) + binarySearchInclusive(leftElement,  d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize, sortDir);
-        uint rightRank = binarySearchExclusive(rightElement, d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize, sortDir) + binarySearchInclusive(rightElement, d_SrcKey + firstElIndex,              tileSize, tileSize, sortDir);
+        //uint leftRank  = binarySearchExclusive(leftElement,  d_SrcKey + firstElIndex,              tileSize, tileSize, sortDir) + binarySearchInclusive(leftElement,  d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize, sortDir);
+        //uint rightRank = binarySearchExclusive(rightElement, d_SrcKey + (firstElIndex + tileSize), tileSize, tileSize, sortDir) + binarySearchInclusive(rightElement, d_SrcKey + firstElIndex,              tileSize, tileSize, sortDir);
+        uint leftRank = linearSearchInclusive(leftElement, d_SrcKey + firstElIndex, tileSize) + linearSearchExclusive(leftElement, d_SrcKey + (firstElIndex + tileSize), tileSize);
+        uint rightRank = linearSearchInclusive(rightElement, d_SrcKey + (firstElIndex + tileSize), tileSize) + linearSearchExclusive(leftElement, d_SrcKey + firstElIndex, tileSize);
 
         d_DstKey[leftRank] = leftElement;
         d_DstVal[leftRank] = d_SrcVal[leftIndex];
