@@ -559,6 +559,8 @@ extern "C" void closeMergeSort(void)
     checkCudaErrors(cudaFree(d_LimitsA));
 }
 
+__global__ mcopy(uint* d_SrcKey, uint)
+
 extern "C" void mergeSort(
     uint *d_DstKey,
     uint *d_DstVal,
@@ -568,37 +570,21 @@ extern "C" void mergeSort(
     uint *d_SrcVal,
     uint N,
     uint sortDir
-)
-{
+) {
     uint tileSize = SHARED_SIZE_LIMIT;
 
-    uint *ikey, *ival, *okey, *oval;
+    uint * ikey, *ival, *okey, *oval;
 
     ikey = d_SrcKey;
     ival = d_SrcVal;
     okey = d_DstKey;
     oval = d_DstVal;
     uint i = 0;
-    for(i; i < N; ++i){
-        //printf("copying index %d\n", i);
-        //printf("%-10d   %-10d   %-10d   %-10d\n", d_SrcKey[i], d_DstKey[i], d_SrcVal[i], d_DstVal[i]);
-        printf("d_SrcKey[%d]: %d",       i, d_SrcKey[i]);
-        printf("    d_SrcVal[%d]: %d",   i, d_SrcVal[i]);
-        printf("    d_DstKey[%d]: %d",   i, d_DstKey[i]);
-        printf("    d_DstVal[%d]: %d\n", i, d_DstVal[i]);
+}
 
 
-        //d_DstKey[i] = d_SrcKey[i];
-        //d_DstVal[i] = d_SrcVal[i];
-    }
-
-    //for(; tileSize < N; tileSize *= 2){
-
-
-
-
-    //}
     /*
+     *
      uint stageCount = 0;
 
     for (uint stride = SHARED_SIZE_LIMIT; stride < N; stride <<= 1, stageCount++);
@@ -653,5 +639,5 @@ extern "C" void mergeSort(
         oval = t;
     }
 */
-}
+
 
