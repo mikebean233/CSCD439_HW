@@ -13,17 +13,19 @@ void printArray(uint* array, int length);
 
 __global__ void mergSort(uint* SrcKey, uint* SrcVal, uint* DstKey, uint* DstVal, uint n){
     int threadId = blockDim.x * blockIdx.x + threadIdx.x;
+    int blockId  = blockIdx.y * gridDim.x  + blockIdx.x;
     if(threadId > n)
         return;
+
 
     DstKey[threadId] = threadId;
 }
 
 int main(int argc, char** argv){
     uint *h_SrcKey, *h_SrcVal, *h_DstKey, *h_DstVal;
-    uint *d_SrcKey, *d_SrcKey, *d_DstKey, *d_DstVal;
+    uint *d_SrcKey, *d_SrcVal, *d_DstKey, *d_DstVal;
     uint3 blockDim, gridDim;
-    uint n;
+    uint n, noTiles;
 
     // Deal with command line arguments
     if(argc < MIN_ARG_COUNT || argc > MAX_ARG_COUNT)
