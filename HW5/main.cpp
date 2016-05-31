@@ -14,6 +14,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <cuda_runtime.h>
 #include <helper_functions.h>
 #include <helper_cuda.h>
@@ -21,6 +22,8 @@
 
 void printArray(uint *array, int size, char* message);
 
+
+int SHARED_SIZE_LIMIT;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Test driver
@@ -32,6 +35,11 @@ int main(int argc, char **argv)
     StopWatchInterface *hTimer = NULL;
 
     const uint   N = atoi(argv[0]); //48 * 1048576;
+
+    SHARED_SIZE_LIMIT = min(1024U, N / 2);
+
+
+
     const uint DIR = 1;
     const uint numValues = 65536;
 
