@@ -99,9 +99,9 @@ int main(int argc, char **argv)
     printf("Time: %f ms\n", sdkGetTimerValue(&hTimer));
 
     printf("Reading back GPU merge sort results...\n");
-    printArrays(h_SrcKey, h_DstKey, h_SrcVal, h_DstVal, N);
     checkCudaErrors(cudaMemcpy(h_DstKey, d_DstKey, N * sizeof(uint), cudaMemcpyDeviceToHost));
     checkCudaErrors(cudaMemcpy(h_DstVal, d_DstVal, N * sizeof(uint), cudaMemcpyDeviceToHost));
+    printArrays(h_SrcKey, h_DstKey, h_SrcVal, h_DstVal, N);
 
 /*check last few elements
     for( int i = N - 10; i < N; i ++ )
